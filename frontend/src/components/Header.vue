@@ -4,10 +4,10 @@
       <el-image style="width: 100px; height: 100px" :src="url" lazy> </el-image>
     </div>
     <div class="nav-right">
-      <span v-show="!isLogin"
+      <span v-if="!isLogin"
         ><el-link type="primary" href="/login">登录</el-link></span
       >
-      <span v-show="isLogin"
+      <span v-else
         ><el-link type="primary"
           ><el-popover placement="bottom" width="40" trigger="click">
             <el-avatar :size="50" :src="user.avatar"></el-avatar>
@@ -24,8 +24,6 @@
       >
     </div>
     <div class="block">
-      <!-- <el-avatar :size="50" :src="user.avatar"></el-avatar>
-            <div>{{user.username}}</div> -->
       <div class="m-action">
         <el-menu
           :default-active="activeIndex"

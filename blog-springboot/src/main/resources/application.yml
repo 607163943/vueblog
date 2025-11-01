@@ -5,9 +5,9 @@ spring:
   profiles:
     active: dev
   datasource:
-    username: root
-    password: 123456
-    url: jdbc:mysql://localhost:3307/blog?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8
+    username: ${mysql.username}
+    password: ${mysql.password}
+    url: jdbc:mysql://${mysql.host}/${mysql.database}?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initial-size: 10 # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
@@ -46,7 +46,7 @@ mybatis-plus:
 shiro-redis:
   enabled: true
   redis-manager:
-    host: localhost:6371
+    host: ${redis.host}
 hcode:
   jwt:
     # 加密秘钥

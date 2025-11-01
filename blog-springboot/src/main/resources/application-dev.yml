@@ -1,0 +1,10 @@
+# mysql配置
+mysql:
+  host: localhost:3307
+  database: blog
+  username: root
+  password: 123456
+
+# redis配置
+redis:
+  host: localhost:6371

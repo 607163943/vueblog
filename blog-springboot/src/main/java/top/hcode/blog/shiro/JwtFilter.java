@@ -2,7 +2,6 @@ package top.hcode.blog.shiro;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import io.jsonwebtoken.Claims;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.ExpiredCredentialsException;
@@ -48,8 +47,9 @@ public class JwtFilter extends AuthenticatingFilter {
             return true;
         } else {
             // 判断是否已过期
-            Claims claim = jwtUtils.getClaimByToken(token);
-            if(claim == null || jwtUtils.isTokenExpired(claim.getExpiration())) {
+            try{
+                jwtUtils.check(token);
+            }catch (Exception e) {
                 throw new ExpiredCredentialsException("token已失效，请重新登录！");
             }
         }

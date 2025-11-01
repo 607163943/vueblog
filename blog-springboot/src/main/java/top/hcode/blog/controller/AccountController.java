@@ -47,6 +47,7 @@ public class AccountController {
             return CommonResult.errorResponse("注册失败,该用户名已被使用");
         }
         int insert = userServiceDao.insert(new MUser().setEmail(registerDto.getEmail())
+                        .setStatus(0)
                 .setUsername(registerDto.getUsername())
                 .setPassword(SecureUtil.md5(registerDto.getPassword())));
         if (insert == 1) {
