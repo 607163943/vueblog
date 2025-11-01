@@ -1,3 +1,6 @@
 /.idea
 
 /blog-springboot/.idea
+/blog-springboot/target
+
+/frontend/node_modules
