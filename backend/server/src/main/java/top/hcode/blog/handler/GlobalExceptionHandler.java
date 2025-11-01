@@ -1,4 +1,4 @@
-package top.hcode.blog.common.exception;
+package top.hcode.blog.handler;
 
 
 import lombok.extern.slf4j.Slf4j;

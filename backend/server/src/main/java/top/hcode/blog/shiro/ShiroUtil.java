@@ -1,4 +1,4 @@
-package top.hcode.blog.util;
+package top.hcode.blog.shiro;
 
 import org.apache.shiro.SecurityUtils;
 import top.hcode.blog.shiro.AccountProfile;

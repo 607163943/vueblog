@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.hcode.blog.pojo.po.MUser;
 import top.hcode.blog.service.MUserService;
-import top.hcode.blog.util.JwtUtils;
+import top.hcode.blog.common.utils.JwtUtils;
 
 /**
  * @Author: Himit_ZH

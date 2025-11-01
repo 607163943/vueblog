@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 import top.hcode.blog.common.result.CommonResult;
-import top.hcode.blog.util.JwtUtils;
+import top.hcode.blog.common.utils.JwtUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

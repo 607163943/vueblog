@@ -1,4 +1,4 @@
-package top.hcode.blog.util;
+package top.hcode.blog.common.utils;
 
 
 import com.auth0.jwt.JWT;

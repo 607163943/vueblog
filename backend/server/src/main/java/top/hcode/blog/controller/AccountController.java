@@ -18,7 +18,7 @@ import top.hcode.blog.common.result.CommonResult;
 import top.hcode.blog.pojo.po.MUser;
 import top.hcode.blog.mapper.MUserMapper;
 import top.hcode.blog.service.MUserService;
-import top.hcode.blog.util.JwtUtils;
+import top.hcode.blog.common.utils.JwtUtils;
 
 import javax.servlet.http.HttpServletResponse;
 

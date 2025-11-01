@@ -53,64 +53,66 @@
 </template>
 
 <script>
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export default {
-    components: { Header,Footer },
-     methods: {
-      handleLook(row) {
-         this.$router.push({ name: "BlogDetail", params: { blogId: this.tableData[row].id } });
-      },
-      handleEdit(row) {
-        
-        this.$router.push({ name: "BlogEdit", params: { blogId: this.tableData[row].id} });
-      },
-      handleDelete(index, rows) {
-      this.$confirm("是否删除该博文？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+  name: 'UserCom',
+  components: { Header, Footer },
+  methods: {
+    handleLook (row) {
+      this.$router.push({ name: 'BlogDetail', params: { blogId: this.tableData[row].id } })
+    },
+    handleEdit (row) {
+      this.$router.push({ name: 'BlogEdit', params: { blogId: this.tableData[row].id } })
+    },
+    handleDelete (index, rows) {
+      this.$confirm('是否删除该博文？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-            this.$axios
-              .get("/blog/delete/" +  this.tableData[index].id, {
-                headers: {
-                  Authorization: localStorage.getItem("token")
-                }
-              })
-              .then(res => {
-                 rows.splice(index, 1)
-              });
-            this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
+          this.$axios
+            .get('/blog/delete/' + this.tableData[index].id, {
+              headers: {
+                Authorization: localStorage.getItem('token')
+              }
+            })
+            .then(res => {
+              rows.splice(index, 1)
+            })
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
-      }
-    },
-    data() {
-      return {
-        ownBlog :false,
-        tableData: [],
-      }
-    },
-    created() {
-    let username = this.$route.params.username;
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    }
+  },
+  data () {
+    return {
+      ownBlog: false,
+      tableData: []
+    }
+  },
+  created () {
+    const username = this.$route.params.username
     if (username) {
-      this.$axios.get("/blog/user/" + username).then(res => {
-        let blogs = res.data.data;
+      this.$axios.get('/blog/user/' + username).then(res => {
+        const blogs = res.data.data
         console.log(blogs)
-        this.tableData = blogs;
+        this.tableData = blogs
         // 判断是否为该作者，是才能编辑
-        this.ownBlog = blogs[0].userId === this.$store.getters.getUserInfo.id;
-      });
+        if (blogs.length > 0) {
+          this.ownBlog = blogs[0].userId === this.$store.getters.getUserInfo.id
+        }
+      })
     }
   }
 }

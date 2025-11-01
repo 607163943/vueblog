@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import top.hcode.blog.common.result.CommonResult;
 import top.hcode.blog.pojo.po.MBlog;
 import top.hcode.blog.service.MBlogService;
-import top.hcode.blog.util.ShiroUtil;
+import top.hcode.blog.shiro.ShiroUtil;
 
 import java.time.LocalDateTime;
 

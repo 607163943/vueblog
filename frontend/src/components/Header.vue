@@ -37,7 +37,7 @@
             <el-link type="success" href="/blog/add">发表博文</el-link>
           </el-menu-item>
           <el-menu-item index="1">
-            <el-link type="warning" @click="toUser">个人文章</el-link>
+            <el-link type="warning" :href="`/user/${user.username}`">个人文章</el-link>
           </el-menu-item>
         </el-menu>
       </div>
@@ -79,9 +79,6 @@ export default {
           _this.$store.commit('rmUserInfo')
           _this.$router.push('/login')
         })
-    },
-    toUser () {
-      this.$router.push({ path: '/user/' + this.user.username })
     }
   }
 }

@@ -50,6 +50,18 @@
                 <artifactId>shiro-redis-spring-boot-starter</artifactId>
                 <version>3.2.1</version>
             </dependency>
+            <!-- jwt -->
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>3.19.0</version>
+            </dependency>
+            <!--knife4j-->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>2.0.4</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -70,6 +82,12 @@
             <groupId>org.crazycake</groupId>
             <artifactId>shiro-redis-spring-boot-starter</artifactId>
             <version>3.2.1</version>
+        </dependency>
+        <!--knife4j-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>2.0.4</version>
         </dependency>
     </dependencies>
 

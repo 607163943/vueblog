@@ -37,17 +37,11 @@ spring:
 
 # mybatis-plus配置
 mybatis-plus:
-  global-config: # 配置逻辑删除
+  global-config:
     db-config:
-      logic-delete-value: 1
-      logic-not-delete-value: 0
-  mapper-locations: classpath*:top/hcode/blog/mapper/xml/**Mapper.xml
+      logic-delete-value: 1 # 逻辑已删除值(默认为1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为0)
   type-aliases-package: top.hcode.blog.pojo.po # po实体包
-
-shiro-redis:
-  enabled: true
-  redis-manager:
-    host: ${redis.host}
 hcode:
   jwt:
     # 加密秘钥
