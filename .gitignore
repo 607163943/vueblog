@@ -1,6 +1,8 @@
 /.idea
 
 /backend/.idea
-/backend/target
+/backend/common/target
+/backend/pojo/target
+/backend/server/target
 
 /frontend/node_modules
