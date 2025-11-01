@@ -3,13 +3,13 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Element from 'element-ui'
-import "element-ui/lib/theme-chalk/index.css"
+import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import mavonEditor from 'mavon-editor'
-import'mavon-editor/dist/css/index.css'
+import 'mavon-editor/dist/css/index.css'
 
-import './axios'
-import './permisssion'
+import '@/utils/axios'
+import '@/utils/permisssion'
 
 Vue.config.productionTip = false
 Vue.use(Element)

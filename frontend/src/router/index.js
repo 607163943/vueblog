@@ -12,7 +12,7 @@ const routes = [
   {
     path: '/',
     name: 'Index',
-    redirect: { name: "Blog" }
+    redirect: { name: 'Blog' }
   },
   {
     path: '/blog',
@@ -31,9 +31,9 @@ const routes = [
   },
   {
     path: '/blog/add',
-    name: 'BlogEdit',
+    name: 'BlogAdd',
     component: BlogEdit,
-    meta:{
+    meta: {
       requireAuth: true
     }
   },
@@ -51,10 +51,10 @@ const routes = [
     path: '/blog/:blogId/edit',
     name: 'BlogEdit',
     component: BlogEdit,
-    meta:{
+    meta: {
       requireAuth: true
     }
-  },
+  }
 ]
 
 const router = new VueRouter({
