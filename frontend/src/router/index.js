@@ -5,7 +5,7 @@ import Blog from '@/views/Blog.vue'
 import BlogDetail from '@/views/BlogDetail.vue'
 import BlogEdit from '@/views/BlogEdit.vue'
 import Register from '@/views/register.vue'
-import User from '@/views/User.vue'
+import User from '@/views/user/User.vue'
 Vue.use(VueRouter)
 
 const routes = [

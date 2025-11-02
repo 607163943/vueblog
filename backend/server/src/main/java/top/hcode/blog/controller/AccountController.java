@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import top.hcode.blog.common.result.CommonResult;
+import top.hcode.blog.common.result.Result;
 import top.hcode.blog.common.utils.JWTUtils;
 import top.hcode.blog.mapper.MUserMapper;
 import top.hcode.blog.pojo.dto.LoginDTO;
@@ -77,9 +78,9 @@ public class AccountController {
     // 退出
     @GetMapping("/logout")
     @RequiresAuthentication
-    public CommonResult logout() {
+    public Result<Object> logout() {
         SecurityUtils.getSubject().logout();
-        return CommonResult.successResponse(null,"退出成功");
+        return Result.success(null, "退出成功");
 
     }
 

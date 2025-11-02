@@ -37,7 +37,9 @@
             <el-link type="success" href="/blog/add">发表博文</el-link>
           </el-menu-item>
           <el-menu-item index="1">
-            <el-link type="warning" :href="`/user/${user.username}`">个人文章</el-link>
+            <el-link type="warning" :href="`/user/${user.username}`"
+              >个人文章</el-link
+            >
           </el-menu-item>
         </el-menu>
       </div>
@@ -46,6 +48,7 @@
 </template>
 
 <script>
+import { userLogoutService } from '@/api/user'
 export default {
   name: 'HeaderCom',
   data () {
@@ -67,18 +70,11 @@ export default {
     }
   },
   methods: {
-    logout () {
-      const _this = this
-      _this.$axios
-        .get('/logout', {
-          headers: {
-            Authorization: localStorage.getItem('token')
-          }
-        })
-        .then((res) => {
-          _this.$store.commit('rmUserInfo')
-          _this.$router.push('/login')
-        })
+    // 登出
+    async logout () {
+      await userLogoutService()
+      this.$store.commit('rmUserInfo')
+      this.$router.push('/login')
     }
   }
 }
