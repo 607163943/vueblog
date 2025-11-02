@@ -51,7 +51,7 @@
 import { userLogoutService } from '@/api/user'
 import { mapState } from 'vuex'
 export default {
-  name: 'HeaderCom',
+  name: 'LayoutHeader',
   data () {
     return {
       activeIndex: '1',

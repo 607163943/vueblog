@@ -1,24 +1,54 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '@/views/Login.vue'
-import Blog from '@/views/Blog.vue'
-import BlogDetail from '@/views/BlogDetail.vue'
-import BlogEdit from '@/views/BlogEdit.vue'
-import Register from '@/views/register.vue'
+import Login from '@/views/login/Login.vue'
+import Blog from '@/views/article/Blog.vue'
+import BlogDetail from '@/views/article/BlogDetail.vue'
+import BlogEdit from '@/views/article/BlogEdit.vue'
+import Register from '@/views/login/Register.vue'
 import User from '@/views/user/User.vue'
+import Layout from '@/views/layout'
 import store from '@/store'
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Index',
-    redirect: { name: 'Blog' }
-  },
-  {
-    path: '/blog',
-    name: 'Blog',
-    component: Blog
+    name: 'Layout',
+    component: Layout,
+    redirect: { name: 'Blog' },
+    children: [
+      {
+        path: '/user/:username',
+        name: 'User',
+        component: User
+      },
+      {
+        path: '/blog',
+        name: 'Blog',
+        component: Blog
+      },
+      {
+        path: '/blog/:blogId',
+        name: 'BlogDetail',
+        component: BlogDetail
+      },
+      {
+        path: '/blog/:blogId/edit',
+        name: 'BlogEdit',
+        component: BlogEdit,
+        meta: {
+          requireAuth: true
+        }
+      },
+      {
+        path: '/blog/add',
+        name: 'BlogAdd',
+        component: BlogEdit,
+        meta: {
+          requireAuth: true
+        }
+      }
+    ]
   },
   {
     path: '/register',
@@ -29,32 +59,6 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
-  },
-  {
-    path: '/blog/add',
-    name: 'BlogAdd',
-    component: BlogEdit,
-    meta: {
-      requireAuth: true
-    }
-  },
-  {
-    path: '/blog/:blogId',
-    name: 'BlogDetail',
-    component: BlogDetail
-  },
-  {
-    path: '/user/:username',
-    name: 'User',
-    component: User
-  },
-  {
-    path: '/blog/:blogId/edit',
-    name: 'BlogEdit',
-    component: BlogEdit,
-    meta: {
-      requireAuth: true
-    }
   }
 ]
 

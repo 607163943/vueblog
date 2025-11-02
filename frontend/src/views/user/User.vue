@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Header></Header>
     <el-table :data="tableData" style="width: 100%" border>
       <el-table-column label="日期" width="180">
         <template slot-scope="scope">
@@ -42,17 +41,12 @@
         </template>
       </el-table-column>
     </el-table>
-    <Footer />
   </div>
 </template>
 
 <script>
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-
 export default {
   name: 'UserCom',
-  components: { Header, Footer },
   methods: {
     handleLook (row) {
       this.$router.push({
@@ -110,7 +104,7 @@ export default {
         this.tableData = blogs
         // 判断是否为该作者，是才能编辑
         if (blogs.length > 0) {
-          this.ownBlog = blogs[0].userId === this.$store.getters.getUserInfo.id
+          this.ownBlog = blogs[0].userId === this.$store.state.user.userInfo.id
         }
       })
     }

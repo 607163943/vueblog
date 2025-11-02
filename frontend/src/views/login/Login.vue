@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import Footer from '@/components/Footer'
+import Footer from '@/views/layout/Footer'
 export default {
   name: 'LoginCom',
   components: { Footer },
