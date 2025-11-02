@@ -2,17 +2,16 @@ package top.hcode.blog.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 import top.hcode.blog.common.result.CommonResult;
+import top.hcode.blog.mapper.MBlogMapper;
 import top.hcode.blog.pojo.po.MBlog;
 import top.hcode.blog.pojo.po.MUser;
-import top.hcode.blog.mapper.MBlogMapper;
 import top.hcode.blog.service.MUserService;
 
 import java.util.List;
@@ -27,13 +26,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/blog/user")
-public class MUserController {
+@RequiredArgsConstructor
+public class UserController {
+    private final MUserService mUserService;
 
-    @Autowired
-    private MUserService mUserService;
-
-    @Autowired
-    private MBlogMapper mBlogService;
+    private final MBlogMapper mBlogService;
 
     @RequiresAuthentication //需要登录认证才能访问
     @GetMapping("/index")

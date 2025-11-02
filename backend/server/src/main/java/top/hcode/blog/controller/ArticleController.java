@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +14,7 @@ import top.hcode.blog.pojo.po.MBlog;
 import top.hcode.blog.service.MBlogService;
 import top.hcode.blog.shiro.ShiroUtil;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
@@ -27,8 +27,8 @@ import java.time.LocalDateTime;
  */
 @RestController
 @RequestMapping
-public class MBlogController {
-    @Autowired
+public class ArticleController {
+    @Resource
     MBlogService blogService;
     @GetMapping("/blogs")
     public CommonResult blogs(Integer currentPage) {

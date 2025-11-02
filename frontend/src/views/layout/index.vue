@@ -17,8 +17,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.layout-content {
-  margin: 20px auto;
-  max-width: 967px;
+.layout {
+  background-color: #efefef;
+
+  .layout-content {
+    margin: 0px auto;
+    padding-top: 100px;
+    max-width: 967px;
+  }
 }
 </style>

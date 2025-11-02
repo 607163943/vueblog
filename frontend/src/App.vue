@@ -5,5 +5,5 @@
   </div>
 </template>
 
-<style>
+<style lang="less" scoped>
 </style>

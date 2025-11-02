@@ -40,7 +40,7 @@
           <div class="user-info">
             <el-avatar
               :size="40"
-              src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+              :src="userInfo.avatar"
             ></el-avatar>
             <span class="username">{{ userInfo.username }}</span>
           </div>
@@ -66,10 +66,10 @@ export default {
     }
   },
   computed: {
-    ...mapState('user', ['userInfo'])
+    ...mapState('user', ['userInfo', 'token'])
   },
   created () {
-    if (this.userInfo.username) {
+    if (this.token) {
       this.isLogin = true
     }
   },
@@ -93,14 +93,19 @@ export default {
 
 <style lang="less" scoped>
 .layout-header {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 4px;
+  padding-top: 4px;
   border-bottom: 1px solid #dcdcdc;
   padding-left: 60px;
   padding-right: 120px;
+  width: 100%;
   height: 60px;
+  background-color: #fff;
   .header-left {
     display: flex;
 
@@ -130,6 +135,7 @@ export default {
 
       ::v-deep(.el-menu-item) {
         font-size: 16px;
+        height: 59px;
       }
     }
   }

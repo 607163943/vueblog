@@ -63,6 +63,9 @@ importers:
       '@vue/eslint-config-standard':
         specifier: ^6.1.0
         version: 6.1.0(@vue/cli-service@5.0.9(@vue/compiler-sfc@3.5.22)(less-loader@8.1.1(less@4.4.2)(webpack@5.102.1))(lodash@4.17.21)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3))(eslint-plugin-import@2.32.0(eslint@7.32.0))(eslint-plugin-node@11.1.0(eslint@7.32.0))(eslint-plugin-promise@5.2.0(eslint@7.32.0))(eslint-plugin-vue@8.7.1(eslint@7.32.0))(eslint@7.32.0)(webpack@5.102.1)
+      element-theme-dark:
+        specifier: ^1.0.3
+        version: 1.0.3
       eslint:
         specifier: ^7.32.0
         version: 7.32.0
@@ -1893,6 +1896,9 @@ packages:
 
   electron-to-chromium@1.5.244:
     resolution: {integrity: sha512-OszpBN7xZX4vWMPJwB9illkN/znA8M36GQqQxi6MNy9axWxhOfJyZZJtSLQCpEFLHP2xK33BiWx9aIuIEXVCcw==}
+
+  element-theme-dark@1.0.3:
+    resolution: {integrity: sha512-za/9dIJYEWF8coKbDCF2VWvu9k9xT3UkLDrQdDaY3c6FD24LHxEMM+LHJeRif8nx9eIpLDwOcyOGELZbhw9Q9w==}
 
   element-ui@2.15.14:
     resolution: {integrity: sha512-2v9fHL0ZGINotOlRIAJD5YuVB8V7WKxrE9Qy7dXhRipa035+kF7WuU/z+tEmLVPBcJ0zt8mOu1DKpWcVzBK8IA==}
@@ -6572,6 +6578,8 @@ snapshots:
   ee-first@1.1.1: {}
 
   electron-to-chromium@1.5.244: {}
+
+  element-theme-dark@1.0.3: {}
 
   element-ui@2.15.14(vue@2.7.16):
     dependencies:
