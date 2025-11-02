@@ -8,3 +8,4 @@ mysql:
 # redis配置
 redis:
   host: localhost:6371
+  port: 6371

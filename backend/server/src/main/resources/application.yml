@@ -31,9 +31,16 @@ spring:
     transaction-query-timeout: 6000 # 事务超时时间
     filters: stat,wall,log4j #数据库日志
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
-
+  redis:
+    port: ${redis.port}
+    host: ${redis.host}
   thymeleaf:
     cache: true
+shiro-redis:
+  enabled: true
+  redis-manager:
+    host: ${redis.host}
+    port: ${redis.port}
 
 # mybatis-plus配置
 mybatis-plus:
@@ -42,6 +49,7 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值(默认为1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为0)
   type-aliases-package: top.hcode.blog.pojo.po # po实体包
+
 hcode:
   jwt:
     # 加密秘钥

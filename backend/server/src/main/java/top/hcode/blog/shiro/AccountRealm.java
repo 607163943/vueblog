@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.hcode.blog.pojo.po.MUser;
 import top.hcode.blog.service.MUserService;
-import top.hcode.blog.common.utils.JwtUtils;
+import top.hcode.blog.common.utils.JWTUtils;
 
 /**
  * @Author: Himit_ZH
@@ -21,7 +21,7 @@ import top.hcode.blog.common.utils.JwtUtils;
 @Component
 public class AccountRealm extends AuthorizingRealm {
     @Autowired
-    JwtUtils jwtUtils;
+    JWTUtils jwtUtils;
     @Autowired
     MUserService userService;
     @Override

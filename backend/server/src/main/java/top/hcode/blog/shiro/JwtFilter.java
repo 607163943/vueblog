@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 import top.hcode.blog.common.result.CommonResult;
-import top.hcode.blog.common.utils.JwtUtils;
+import top.hcode.blog.common.utils.JWTUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -28,7 +28,7 @@ import java.io.IOException;
 public class JwtFilter extends AuthenticatingFilter {
 
     @Autowired
-    JwtUtils jwtUtils;
+    JWTUtils jwtUtils;
     @Override
     protected AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
         // 获取 token

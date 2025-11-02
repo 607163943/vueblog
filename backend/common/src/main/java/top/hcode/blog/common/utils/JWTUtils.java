@@ -17,7 +17,7 @@ import java.util.Map;
 @Data
 @Component
 @ConfigurationProperties(prefix = "hcode.jwt")
-public class JwtUtils {
+public class JWTUtils {
 
     private String secret;
     private long expire;

@@ -19,12 +19,12 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.hcode.blog.shiro.AccountRealm;
 import top.hcode.blog.shiro.JwtFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -35,14 +35,28 @@ import java.util.Map;
  */
 @Configuration
 public class ShiroConfig {
-    @Autowired
+    @Resource
     JwtFilter jwtFilter;
+
+    /**
+     * session管理器
+     * @param redisSessionDAO
+     * @return
+     */
     @Bean
     public SessionManager sessionManager(RedisSessionDAO redisSessionDAO) {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setSessionDAO(redisSessionDAO);
         return sessionManager;
     }
+
+    /**
+     * 安全管理器
+     * @param accountRealm
+     * @param sessionManager
+     * @param redisCacheManager
+     * @return
+     */
     @Bean
     public DefaultWebSecurityManager securityManager(AccountRealm accountRealm,
                                                      SessionManager sessionManager,

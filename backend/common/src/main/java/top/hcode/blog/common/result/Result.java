@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.hcode.blog.common.constant.ResultCodeStatus;
 
 @ApiModel("统一返回结果类")
 @Data
@@ -25,7 +26,7 @@ public class Result<T> {
     }
 
     public static <T> Result<T> success(T data,String success) {
-        return Result.of(200, data, success);
+        return Result.of(ResultCodeStatus.OK, data, success);
     }
 
     public static <T> Result<T> success(T data) {
@@ -41,10 +42,10 @@ public class Result<T> {
     }
 
     public static <T> Result<T> error(String msg) {
-        return Result.error(500, msg);
+        return Result.error(ResultCodeStatus.SERVER_ERROR, msg);
     }
 
     public static <T> Result<T> error() {
-        return Result.error(500, "error");
+        return Result.error(ResultCodeStatus.SERVER_ERROR, "error");
     }
 }

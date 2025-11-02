@@ -3,22 +3,22 @@ package top.hcode.blog.controller;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.RequiredArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import top.hcode.blog.common.result.CommonResult;
+import top.hcode.blog.common.utils.JWTUtils;
+import top.hcode.blog.mapper.MUserMapper;
 import top.hcode.blog.pojo.dto.LoginDTO;
 import top.hcode.blog.pojo.dto.RegisterDTO;
-import top.hcode.blog.common.result.CommonResult;
 import top.hcode.blog.pojo.po.MUser;
-import top.hcode.blog.mapper.MUserMapper;
 import top.hcode.blog.service.MUserService;
-import top.hcode.blog.common.utils.JwtUtils;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,16 +28,11 @@ import javax.servlet.http.HttpServletResponse;
  * @Description:
  */
 @RestController
+@RequiredArgsConstructor
 public class AccountController {
-
-    @Autowired
-    MUserMapper userServiceDao;
-
-    @Autowired
-    MUserService userService;
-
-    @Autowired
-    JwtUtils jwtUtils;
+    private final MUserMapper userServiceDao;
+    private final MUserService userService;
+    private final JWTUtils jwtUtils;
 
     @PostMapping("/register")
     public CommonResult register(@Validated @RequestBody RegisterDTO registerDto, HttpServletResponse response){
