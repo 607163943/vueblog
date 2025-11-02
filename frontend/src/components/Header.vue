@@ -10,8 +10,8 @@
       <span v-else
         ><el-link type="primary"
           ><el-popover placement="bottom" width="40" trigger="click">
-            <el-avatar :size="50" :src="user.avatar"></el-avatar>
-            <el-button slot="reference">{{ user.username }}</el-button>
+            <el-avatar :size="50" :src="userInfo.avatar"></el-avatar>
+            <el-button slot="reference">{{ userInfo.username }}</el-button>
           </el-popover></el-link
         >
       </span>
@@ -37,7 +37,7 @@
             <el-link type="success" href="/blog/add">发表博文</el-link>
           </el-menu-item>
           <el-menu-item index="1">
-            <el-link type="warning" :href="`/user/${user.username}`"
+            <el-link type="warning" :href="`/user/${userInfo.username}`"
               >个人文章</el-link
             >
           </el-menu-item>
@@ -49,23 +49,21 @@
 
 <script>
 import { userLogoutService } from '@/api/user'
+import { mapState } from 'vuex'
 export default {
   name: 'HeaderCom',
   data () {
     return {
       activeIndex: '1',
-      user: {
-        username: '请先登录',
-        avatar: require('@/asserts/img/default_user.jpg')
-      },
       isLogin: false,
       url: 'https://cdn.jsdelivr.net/gh/HimitZH/CDN/images/HCODE.png'
     }
   },
+  computed: {
+    ...mapState('user', ['userInfo'])
+  },
   created () {
-    if (this.$store.getters.getUserInfo.username) {
-      this.user.username = this.$store.getters.getUserInfo.username
-      this.user.avatar = this.$store.getters.getUserInfo.avatar
+    if (this.userInfo.username) {
       this.isLogin = true
     }
   },
@@ -73,7 +71,8 @@ export default {
     // 登出
     async logout () {
       await userLogoutService()
-      this.$store.commit('rmUserInfo')
+      this.$store.commit('user/setToken', '')
+      this.$store.commit('user/setUserInfo', {})
       this.$router.push('/login')
     }
   }

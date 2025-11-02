@@ -12,7 +12,7 @@ const instance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
-  const token = localStorage.getItem('token')
+  const token = store.state.user.token
   if (token) {
     config.headers.Authorization = token
   }
@@ -47,7 +47,8 @@ instance.interceptors.response.use(function (response) {
 
   // 如果是无认证
   if (error.response.status === 401) {
-    store.commit('rmUserInfo')
+    store.commit('user/setToken', '')
+    store.commit('user/setUserInfo', {})
     router.push('/login')
   } else { // 如果是认证错误
     Element.Message.error(error.messgae, { duration: 3 * 1000 })

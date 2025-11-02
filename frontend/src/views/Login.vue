@@ -107,8 +107,8 @@ export default {
             const userInfor = res.data.data
 
             // 提交到仓库
-            _this.$store.commit('setToken', jwt)
-            _this.$store.commit('setUserInfo', userInfor)
+            _this.$store.commit('user/setToken', jwt)
+            _this.$store.commit('user/setUserInfo', userInfor)
 
             console.log(_this.$store.getters.getUserInfo)
 
