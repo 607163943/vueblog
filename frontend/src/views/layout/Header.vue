@@ -1,47 +1,54 @@
 <template>
-  <div class="m-content">
-    <div class="nav-left">
-      <el-image style="width: 100px; height: 100px" :src="url" lazy> </el-image>
+  <div class="layout-header">
+    <div class="header-left">
+      <!-- logo -->
+      <div class="header-logo">
+        <router-link to="/">
+          <div class="logo">
+            <div class="pic">
+              <el-image style="width: 72px; height: 58px" :src="url">
+              </el-image>
+            </div>
+            <div class="text">HCODE小站</div>
+          </div>
+        </router-link>
+      </div>
+
+      <!-- 导航栏 -->
+      <div class="nav">
+        <el-menu
+          :default-active="$route.path"
+          class="el-menu-demo"
+          mode="horizontal"
+          router
+        >
+          <el-menu-item index="/blog"> 主页 </el-menu-item>
+          <el-menu-item index="/blog/add"> 发表博文 </el-menu-item>
+          <el-menu-item :index="`/user/${userInfo.username}`">
+            个人文章
+          </el-menu-item>
+        </el-menu>
+      </div>
     </div>
-    <div class="nav-right">
+    <div class="header-right">
       <span v-if="!isLogin"
         ><el-link type="primary" href="/login">登录</el-link></span
       >
-      <span v-else
-        ><el-link type="primary"
-          ><el-popover placement="bottom" width="40" trigger="click">
-            <el-avatar :size="50" :src="userInfo.avatar"></el-avatar>
-            <el-button slot="reference">{{ userInfo.username }}</el-button>
-          </el-popover></el-link
-        >
-      </span>
-      &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;
-      <span v-show="!isLogin"
-        ><el-link type="primary" href="/register">注册</el-link></span
-      >
-      <span v-show="isLogin"
-        ><el-link type="danger" @click="logout">退出</el-link></span
-      >
-    </div>
-    <div class="block">
-      <div class="m-action">
-        <el-menu
-          :default-active="activeIndex"
-          class="el-menu-demo"
-          mode="horizontal"
-        >
-          <el-menu-item index="1">
-            <el-link type="info" href="/blog">主页</el-link>
-          </el-menu-item>
-          <el-menu-item index="1">
-            <el-link type="success" href="/blog/add">发表博文</el-link>
-          </el-menu-item>
-          <el-menu-item index="1">
-            <el-link type="warning" :href="`/user/${userInfo.username}`"
-              >个人文章</el-link
-            >
-          </el-menu-item>
-        </el-menu>
+      <!-- 用户信息 -->
+      <div v-else class="user">
+        <el-dropdown @command="handleCommand">
+          <div class="user-info">
+            <el-avatar
+              :size="40"
+              src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+            ></el-avatar>
+            <span class="username">{{ userInfo.username }}</span>
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="profile">个人中心</el-dropdown-item>
+            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </div>
   </div>
@@ -54,9 +61,8 @@ export default {
   name: 'LayoutHeader',
   data () {
     return {
-      activeIndex: '1',
       isLogin: false,
-      url: 'https://cdn.jsdelivr.net/gh/HimitZH/CDN/images/HCODE.png'
+      url: require('@/asserts/img/logo.png')
     }
   },
   computed: {
@@ -68,6 +74,12 @@ export default {
     }
   },
   methods: {
+    // 处理下拉菜单命令
+    handleCommand (command) {
+      if (command === 'logout') {
+        this.logout()
+      }
+    },
     // 登出
     async logout () {
       await userLogoutService()
@@ -79,70 +91,61 @@ export default {
 }
 </script>
 
-<style>
-.m-content {
-  max-width: 890px;
-  height: 100px;
-  margin: 0 auto;
-}
+<style lang="less" scoped>
+.layout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  border-bottom: 1px solid #dcdcdc;
+  padding-left: 60px;
+  padding-right: 120px;
+  height: 60px;
+  .header-left {
+    display: flex;
 
-.m-action {
-  margin: 10px 0;
-}
+    .header-logo {
+      .logo {
+        display: flex;
+        align-items: center;
 
-.nav-left {
-  float: left;
-}
+        .text {
+          margin-left: 8px;
+          color: #292929;
+        }
+      }
+    }
 
-.nav-right {
-  float: right;
-  height: 80px;
-  padding-top: 30px;
-  font-size: 14px;
-  color: #909399;
-}
+    .nav {
+      margin-left: 12px;
 
-.block {
-  text-align: center;
-}
-.el-popover {
-  text-align: center !important;
-}
+      ::v-deep(.el-menu.el-menu--horizontal) {
+        border: none;
+      }
 
-.el-menu-demo {
-  padding-right: 20%;
-  height: 80px;
-  padding-top: 20px;
-  background-color: rgba(0, 0, 0, 0);
-  float: right;
-}
+      ::v-deep(.el-menu--horizontal > .el-menu-item.is-active) {
+        border-bottom: none;
+        border-bottom-color: transparent;
+      }
 
-/* 点击出来的下划线进行隐藏 */
-.el-menu-item.is-active {
-  border-bottom: none !important;
-  color: rgba(0, 0, 0, 0);
-}
+      ::v-deep(.el-menu-item) {
+        font-size: 16px;
+      }
+    }
+  }
 
-/* 整体的下划线进行隐藏 */
-.el-menu.el-menu--horizontal {
-  border-bottom: none !important;
-}
+  .header-right {
+    .user {
+      .user-info {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
 
-/* 导航栏的间距等样式 */
-.el-menu-item {
-  padding: 0 62px;
-  font-size: 16px;
-}
-
-/* 点击出来的下划线动效残留进行隐藏 */
-.el-menu--horizontal > .el-menu-item {
-  border-bottom: none;
-}
-
-/* 点击以后的背景色进行隐藏 */
-.el-menu--horizontal > .el-menu-item:not(.is-disabled):focus,
-.el-menu--horizontal > .el-menu-item:not(.is-disabled):hover,
-.el-menu--horizontal > .el-submenu .el-submenu__title:hover {
-  background-color: rgba(0, 0, 0, 0);
+        .username {
+          margin-left: 8px;
+        }
+      }
+    }
+  }
 }
 </style>

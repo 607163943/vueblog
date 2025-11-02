@@ -5,6 +5,7 @@ import store from '@/store'
 import request from '@/utils/request'
 import '@/utils/element-ui'
 import '@/utils/mavon-editor'
+import '@/styles/base.less'
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = request

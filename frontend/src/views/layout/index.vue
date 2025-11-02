@@ -1,7 +1,9 @@
 <template>
   <div class="layout">
     <layout-header></layout-header>
-    <router-view></router-view>
+    <div class="layout-content">
+      <router-view></router-view>
+    </div>
     <layout-footer></layout-footer>
   </div>
 </template>
@@ -14,6 +16,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less" scoped>
+.layout-content {
+  margin: 20px auto;
+  max-width: 967px;
+}
 </style>
