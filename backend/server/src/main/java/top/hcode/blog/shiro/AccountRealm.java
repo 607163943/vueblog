@@ -8,7 +8,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import top.hcode.blog.pojo.po.MUser;
+import top.hcode.blog.pojo.po.User;
 import top.hcode.blog.service.MUserService;
 import top.hcode.blog.common.utils.JWTUtils;
 
@@ -37,7 +37,7 @@ public class AccountRealm extends AuthorizingRealm {
         JwtToken jwt = (JwtToken) token;
         log.info("jwt----------------->{}", jwt);
         String userId = jwtUtils.getUserId((String) jwt.getPrincipal());
-        MUser user = userService.getById(Long.parseLong(userId));
+        User user = userService.getById(Long.parseLong(userId));
         if(user == null) {
             throw new UnknownAccountException("账户不存在！");
         }

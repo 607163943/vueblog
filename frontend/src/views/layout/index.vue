@@ -21,7 +21,6 @@ export default {
   .layout-content {
     margin: 0px auto;
     padding-top: 100px;
-    max-width: 967px;
   }
 }
 </style>

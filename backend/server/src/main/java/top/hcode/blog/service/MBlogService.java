@@ -1,6 +1,6 @@
 package top.hcode.blog.service;
 
-import top.hcode.blog.pojo.po.MBlog;
+import top.hcode.blog.pojo.po.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author Himit_ZH
  * @since 2020-07-19
  */
-public interface MBlogService extends IService<MBlog> {
+public interface MBlogService extends IService<Article> {
 
 }

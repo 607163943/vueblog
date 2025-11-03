@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.hcode.blog.common.result.CommonResult;
-import top.hcode.blog.pojo.po.MBlog;
+import top.hcode.blog.pojo.po.Article;
 import top.hcode.blog.service.MBlogService;
 import top.hcode.blog.shiro.ShiroUtil;
 
@@ -34,26 +34,26 @@ public class ArticleController {
     public CommonResult blogs(Integer currentPage) {
         if(currentPage == null || currentPage < 1) currentPage = 1;
         Page page = new Page(currentPage, 5);
-        IPage pageData = blogService.page(page, new QueryWrapper<MBlog>().orderByDesc("gmt_create"));
+        IPage pageData = blogService.page(page, new QueryWrapper<Article>().orderByDesc("gmt_create"));
         return CommonResult.successResponse(pageData,"获取成功");
     }
 
     @GetMapping("/blog/{id}")
     public CommonResult detail(@PathVariable(name = "id") Long id) {
-        MBlog blog = blogService.getById(id);
+        Article blog = blogService.getById(id);
         Assert.notNull(blog, "该博文已删除！");
         return CommonResult.successResponse(blog,"查询成功");
     }
 
     @RequiresAuthentication
     @PostMapping("/blog/edit")
-    public CommonResult edit(@Validated @RequestBody MBlog blog) {
-        MBlog temp = null;
+    public CommonResult edit(@Validated @RequestBody Article blog) {
+        Article temp = null;
         if(blog.getId() != null) {
             temp = blogService.getById(blog.getId());
             Assert.isTrue(temp.getUserId().longValue() == ShiroUtil.getProfile().getId().longValue(), "没有权限编辑");
         } else {
-            temp = new MBlog();
+            temp = new Article();
             temp.setUserId(ShiroUtil.getProfile().getId());
             temp.setGmtCreate(LocalDateTime.now());
             temp.setStatus(0);

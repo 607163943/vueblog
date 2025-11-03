@@ -20,7 +20,8 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class MBlog implements Serializable {
+@TableName("m_blog")
+public class Article implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,8 +30,6 @@ public class MBlog implements Serializable {
 
     private Long userId;
 
-    //private String author;
-
     private String title;
 
     private String description;
@@ -38,10 +37,12 @@ public class MBlog implements Serializable {
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField(fill = FieldFill.INSERT)
+    // TODO 需要配置mybatis-plus的自动填充配置才能生效
     private LocalDateTime gmtCreate;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    // TODO 需要配置mybatis-plus的自动填充配置才能生效
     private LocalDateTime gmtModified;
 
     private Integer status;

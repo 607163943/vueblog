@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.hcode.blog.common.result.CommonResult;
 import top.hcode.blog.mapper.MBlogMapper;
-import top.hcode.blog.pojo.po.MBlog;
-import top.hcode.blog.pojo.po.MUser;
+import top.hcode.blog.pojo.po.Article;
+import top.hcode.blog.pojo.po.User;
 import top.hcode.blog.service.MUserService;
 
 import java.util.List;
@@ -35,24 +35,24 @@ public class UserController {
     @RequiresAuthentication //需要登录认证才能访问
     @GetMapping("/index")
     public Object test(){
-        MUser user = mUserService.getById(1L);
+        User user = mUserService.getById(1L);
         return CommonResult.successResponse(user, "操作成功");
     }
 
     @GetMapping("/{username}")
     public CommonResult getUserBlog(@PathVariable("username")String username){
-        QueryWrapper<MUser> wrapper1 = new QueryWrapper<MUser>().eq("username", username);
+        QueryWrapper<User> wrapper1 = new QueryWrapper<User>().eq("username", username);
 
-        MUser user = mUserService.getOne(wrapper1);
+        User user = mUserService.getOne(wrapper1);
 
         if (user==null){
             return  CommonResult.errorResponse("该用户不存在");
         }
 
 
-        QueryWrapper<MBlog> wrapper2 = new QueryWrapper<MBlog>().eq("user_id", user.getId()).orderByDesc("gmt_create");
-        List<MBlog> mBlogs = mBlogService.selectList(wrapper2);
-        return  CommonResult.successResponse(mBlogs, "查询成功");
+        QueryWrapper<Article> wrapper2 = new QueryWrapper<Article>().eq("user_id", user.getId()).orderByDesc("gmt_create");
+        List<Article> articles = mBlogService.selectList(wrapper2);
+        return  CommonResult.successResponse(articles, "查询成功");
     }
 
 

@@ -1,6 +1,6 @@
 package top.hcode.blog.mapper;
 
-import top.hcode.blog.pojo.po.MBlog;
+import top.hcode.blog.pojo.po.Article;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author Himit_ZH
  * @since 2020-07-19
  */
-public interface MBlogMapper extends BaseMapper<MBlog> {
+public interface MBlogMapper extends BaseMapper<Article> {
 
 }

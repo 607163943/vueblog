@@ -1,6 +1,6 @@
 package top.hcode.blog.service.impl;
 
-import top.hcode.blog.pojo.po.MUser;
+import top.hcode.blog.pojo.po.User;
 import top.hcode.blog.mapper.MUserMapper;
 import top.hcode.blog.service.MUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2020-07-19
  */
 @Service
-public class MUserServiceImpl extends ServiceImpl<MUserMapper, MUser> implements MUserService {
+public class MUserServiceImpl extends ServiceImpl<MUserMapper, User> implements MUserService {
 
 }

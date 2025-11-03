@@ -18,7 +18,7 @@ import top.hcode.blog.common.utils.JWTUtils;
 import top.hcode.blog.mapper.MUserMapper;
 import top.hcode.blog.pojo.dto.LoginDTO;
 import top.hcode.blog.pojo.dto.RegisterDTO;
-import top.hcode.blog.pojo.po.MUser;
+import top.hcode.blog.pojo.po.User;
 import top.hcode.blog.service.MUserService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,12 +37,12 @@ public class AccountController {
 
     @PostMapping("/register")
     public CommonResult register(@Validated @RequestBody RegisterDTO registerDto, HttpServletResponse response){
-        QueryWrapper<MUser> wrapper = new QueryWrapper<MUser>().eq("username", registerDto.getUsername());
-        MUser user = userService.getOne(wrapper);
+        QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("username", registerDto.getUsername());
+        User user = userService.getOne(wrapper);
         if(user!=null){
             return CommonResult.errorResponse("注册失败,该用户名已被使用");
         }
-        int insert = userServiceDao.insert(new MUser().setEmail(registerDto.getEmail())
+        int insert = userServiceDao.insert(new User().setEmail(registerDto.getEmail())
                         .setStatus(0)
                 .setUsername(registerDto.getUsername())
                 .setPassword(SecureUtil.md5(registerDto.getPassword())));
@@ -56,8 +56,8 @@ public class AccountController {
 
     @PostMapping("/login")
     public CommonResult login(@Validated @RequestBody LoginDTO loginDto, HttpServletResponse response){
-        QueryWrapper<MUser> wrapper = new QueryWrapper<MUser>().eq("username", loginDto.getUsername());
-        MUser user = userService.getOne(wrapper);
+        QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("username", loginDto.getUsername());
+        User user = userService.getOne(wrapper);
         Assert.notNull(user,"用户不存在");
         if (!user.getPassword().equals(SecureUtil.md5(loginDto.getPassword()))){
             return CommonResult.errorResponse("密码不正确");
