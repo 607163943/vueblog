@@ -1,0 +1,13 @@
+package top.hcode.blog.common.utils;
+
+public class UserContext {
+    private static final ThreadLocal<Long> currentUser = new ThreadLocal<>();
+
+    public static void setUserId(Long userId){
+        currentUser.set(userId);
+    }
+
+    public static Long getUserId(){
+        return currentUser.get();
+    }
+}

@@ -2,6 +2,7 @@ package top.hcode.blog.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import top.hcode.blog.common.result.CommonResult;
 import top.hcode.blog.common.result.PageResult;
 import top.hcode.blog.common.result.Result;
+import top.hcode.blog.common.utils.UserContext;
 import top.hcode.blog.pojo.dto.BasePageDTO;
+import top.hcode.blog.pojo.dto.UserArticlePageDTO;
 import top.hcode.blog.pojo.po.Article;
 import top.hcode.blog.pojo.vo.ArticlePageVO;
 import top.hcode.blog.service.IArticleService;
@@ -82,5 +85,16 @@ public class ArticleController {
         boolean result = articleService.removeById(id);
         Assert.isTrue(result, "删除失败！该博文不存在！");
         return CommonResult.successResponse( null,"删除成功");
+    }
+
+    @ApiOperation("获取用户文章")
+    @GetMapping("/article/user/{username}")
+    public CommonResult getUserBlog(@PathVariable("username") String username, UserArticlePageDTO userArticlePageDTO){
+        Long userId = UserContext.getUserId();
+
+
+        QueryWrapper<Article> wrapper = new QueryWrapper<Article>().eq("user_id", userId).orderByDesc("create_time");
+        List<Article> articles = articleService.list(wrapper);
+        return  CommonResult.successResponse(articles, "查询成功");
     }
 }

@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/login/Login.vue'
-import Blog from '@/views/article/ArticleList.vue'
-import BlogDetail from '@/views/article/BlogDetail.vue'
-import BlogEdit from '@/views/article/BlogEdit.vue'
+import Blog from '@/views/home/index.vue'
+import BlogDetail from '@/views/home/BlogDetail.vue'
+import BlogEdit from '@/views/home/BlogEdit.vue'
 import Register from '@/views/login/Register.vue'
-import User from '@/views/article/UserArticle.vue'
+import UserArticle from '@/views/user-article/index.vue'
 import Layout from '@/views/layout'
 import store from '@/store'
 Vue.use(VueRouter)
@@ -18,9 +18,9 @@ const routes = [
     redirect: { name: 'Blog' },
     children: [
       {
-        path: '/user/:username',
-        name: 'User',
-        component: User,
+        path: '/user/article/:username',
+        name: 'UserArticle',
+        component: UserArticle,
         meta: {
           requireAuth: true
         }

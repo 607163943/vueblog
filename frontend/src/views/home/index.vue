@@ -12,7 +12,6 @@
                 <div class="meta">
                   <div class="user">
                     <div class="pic">
-                      <!-- 分页数据结构需要调整 -->
                       <el-avatar
                         :size="30"
                         :src="
@@ -46,7 +45,7 @@
       :current-page="pageParams.page"
       :page-size="pageParams.pageSize"
       :total="total"
-      @current-change="pageQuery"
+      @current-change="pageChange"
     >
     </el-pagination>
   </div>
@@ -77,6 +76,11 @@ export default {
       const res = await articlePageQueryService(this.pageParams)
       this.articleList = res.data.data.result
       this.total = res.data.data.total
+    },
+    // 换页查询
+    pageChange (newPage) {
+      this.pageParams.page = newPage
+      this.pageQuery()
     }
   }
 }

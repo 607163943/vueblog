@@ -24,7 +24,7 @@
         >
           <el-menu-item index="/blog"> 主页 </el-menu-item>
           <el-menu-item index="/blog/add"> 发表博文 </el-menu-item>
-          <el-menu-item :index="`/user/${userInfo.username}`">
+          <el-menu-item :index="`/user/article/${userInfo.username}`">
             个人文章
           </el-menu-item>
         </el-menu>

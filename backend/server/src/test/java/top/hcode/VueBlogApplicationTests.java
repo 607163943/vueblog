@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SpringBootTest
-class BlogApplicationTests {
+class VueBlogApplicationTests {
 
     @Test
     void contextLoads() {

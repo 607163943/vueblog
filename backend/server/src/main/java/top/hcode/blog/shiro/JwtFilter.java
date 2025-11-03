@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 import top.hcode.blog.common.result.CommonResult;
 import top.hcode.blog.common.utils.JWTUtils;
+import top.hcode.blog.common.utils.UserContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -85,5 +86,16 @@ public class JwtFilter extends AuthenticatingFilter {
             return false;
         }
         return super.preHandle(request, response);
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    @Override
+    protected void postHandle(ServletRequest request, ServletResponse response) {
+        UserContext.setUserId(null);
     }
 }
