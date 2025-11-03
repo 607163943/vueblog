@@ -3,6 +3,7 @@ package top.hcode.blog.controller;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Date: 2020/7/20 00:25
  * @Description:
  */
+@Api(tags = "账号接口")
 @RestController
 @RequiredArgsConstructor
 public class AccountController {

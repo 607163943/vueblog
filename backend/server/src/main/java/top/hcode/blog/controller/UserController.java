@@ -2,6 +2,7 @@ package top.hcode.blog.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.hcode.blog.common.result.CommonResult;
-import top.hcode.blog.mapper.MBlogMapper;
+import top.hcode.blog.mapper.ArticleMapper;
 import top.hcode.blog.pojo.po.Article;
 import top.hcode.blog.pojo.po.User;
 import top.hcode.blog.service.MUserService;
@@ -24,13 +25,14 @@ import java.util.List;
  * @author Himit_ZH
  * @since 2020-07-19
  */
+@Api(tags = "用户接口")
 @RestController
 @RequestMapping("/blog/user")
 @RequiredArgsConstructor
 public class UserController {
     private final MUserService mUserService;
 
-    private final MBlogMapper mBlogService;
+    private final ArticleMapper mBlogService;
 
     @RequiresAuthentication //需要登录认证才能访问
     @GetMapping("/index")

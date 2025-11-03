@@ -15,11 +15,13 @@
                       <!-- 分页数据结构需要调整 -->
                       <el-avatar
                         :size="30"
-                        :src="article.avatar ? article.avatar : avatar"
+                        :src="
+                          article.authorAvatar ? article.authorAvatar : avatar
+                        "
                       ></el-avatar>
                     </div>
                     <div class="username">
-                      {{ article.username ? article.username : "未知用户" }}
+                      {{ article.author ? article.author : "未知用户" }}
                     </div>
                   </div>
                   <div class="date">{{ article.gmtModified }}</div>
@@ -41,10 +43,10 @@
       class="pager"
       background
       layout="prev, pager, next"
-      :current-page="currentPage"
-      :page-size="pageSize"
+      :current-page="pageParams.page"
+      :page-size="pageParams.pageSize"
       :total="total"
-      @current-change="getPage"
+      @current-change="pageQuery"
     >
     </el-pagination>
   </div>
@@ -57,24 +59,24 @@ export default {
   data () {
     return {
       articleList: [],
-      currentPage: 1,
+      pageParams: {
+        page: 1,
+        pageSize: 5
+      },
       total: 0,
-      pageSize: 5,
       avatar:
         'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
     }
   },
   created () {
-    this.pageQuery(1)
+    this.pageQuery()
   },
   methods: {
     // 分页查询文章
-    async pageQuery (page) {
-      const res = await articlePageQueryService({ currentPage: page })
-      this.articleList = res.data.data.records
-      this.currentPage = res.data.data.current
+    async pageQuery () {
+      const res = await articlePageQueryService(this.pageParams)
+      this.articleList = res.data.data.result
       this.total = res.data.data.total
-      this.pageSize = res.data.data.size
     }
   }
 }
@@ -156,6 +158,7 @@ export default {
 
             ::v-deep(.el-avatar--circle) {
               display: block;
+              border: 1px solid #efefef;
             }
           }
 
