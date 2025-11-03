@@ -5,7 +5,7 @@ import Blog from '@/views/article/index.vue'
 import BlogDetail from '@/views/article/BlogDetail.vue'
 import BlogEdit from '@/views/article/BlogEdit.vue'
 import Register from '@/views/login/Register.vue'
-import User from '@/views/user/User.vue'
+import User from '@/views/article/UserArticle.vue'
 import Layout from '@/views/layout'
 import store from '@/store'
 Vue.use(VueRouter)
@@ -20,7 +20,10 @@ const routes = [
       {
         path: '/user/:username',
         name: 'User',
-        component: User
+        component: User,
+        meta: {
+          requireAuth: true
+        }
       },
       {
         path: '/blog',

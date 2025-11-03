@@ -46,7 +46,27 @@
 
 <script>
 export default {
-  name: 'UserCom',
+  name: 'UserArticle',
+  data () {
+    return {
+      ownBlog: false,
+      tableData: []
+    }
+  },
+  created () {
+    const username = this.$route.params.username
+    if (username) {
+      this.$axios.get('/blog/user/' + username).then((res) => {
+        const blogs = res.data.data
+        console.log(blogs)
+        this.tableData = blogs
+        // 判断是否为该作者，是才能编辑
+        if (blogs.length > 0) {
+          this.ownBlog = blogs[0].userId === this.$store.state.user.userInfo.id
+        }
+      })
+    }
+  },
   methods: {
     handleLook (row) {
       this.$router.push({
@@ -87,26 +107,6 @@ export default {
             message: '已取消删除'
           })
         })
-    }
-  },
-  data () {
-    return {
-      ownBlog: false,
-      tableData: []
-    }
-  },
-  created () {
-    const username = this.$route.params.username
-    if (username) {
-      this.$axios.get('/blog/user/' + username).then((res) => {
-        const blogs = res.data.data
-        console.log(blogs)
-        this.tableData = blogs
-        // 判断是否为该作者，是才能编辑
-        if (blogs.length > 0) {
-          this.ownBlog = blogs[0].userId === this.$store.state.user.userInfo.id
-        }
-      })
     }
   }
 }

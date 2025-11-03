@@ -1,6 +1,6 @@
 # mysql配置
 mysql:
-  host: localhost:3307
+  host: localhost:13307
   database: blog
   username: root
   password: 123456

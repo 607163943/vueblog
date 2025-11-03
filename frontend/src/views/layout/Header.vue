@@ -3,15 +3,14 @@
     <div class="header-left">
       <!-- logo -->
       <div class="header-logo">
-        <router-link to="/">
-          <div class="logo">
-            <div class="pic">
+        <h1>
+          <router-link to="/">
+            <div class="logo">
               <el-image style="width: 72px; height: 58px" :src="url">
               </el-image>
             </div>
-            <div class="text">HCODE小站</div>
-          </div>
-        </router-link>
+          </router-link>
+        </h1>
       </div>
 
       <!-- 导航栏 -->
@@ -20,6 +19,7 @@
           :default-active="$route.path"
           class="el-menu-demo"
           mode="horizontal"
+          active-text-color="#101932"
           router
         >
           <el-menu-item index="/blog"> 主页 </el-menu-item>
@@ -38,10 +38,7 @@
       <div v-else class="user">
         <el-dropdown @command="handleCommand">
           <div class="user-info">
-            <el-avatar
-              :size="40"
-              :src="userInfo.avatar"
-            ></el-avatar>
+            <el-avatar :size="60" :src="userInfo.avatar"></el-avatar>
             <span class="username">{{ userInfo.username }}</span>
           </div>
           <el-dropdown-menu slot="dropdown">
@@ -104,22 +101,10 @@ export default {
   padding-left: 60px;
   padding-right: 120px;
   width: 100%;
-  height: 60px;
+  height: 80px;
   background-color: #fff;
   .header-left {
     display: flex;
-
-    .header-logo {
-      .logo {
-        display: flex;
-        align-items: center;
-
-        .text {
-          margin-left: 8px;
-          color: #292929;
-        }
-      }
-    }
 
     .nav {
       margin-left: 12px;
@@ -128,9 +113,9 @@ export default {
         border: none;
       }
 
-      ::v-deep(.el-menu--horizontal > .el-menu-item.is-active) {
+      ::v-deep(.el-menu--horizontal > .el-menu-item) {
         border-bottom: none;
-        border-bottom-color: transparent;
+        font-size: 18px;
       }
 
       ::v-deep(.el-menu-item) {
@@ -147,8 +132,20 @@ export default {
         align-items: center;
         cursor: pointer;
 
+        &:hover {
+          .username {
+            color: #101932;
+          }
+        }
+
+        ::v-deep(.el-avatar--circle) {
+          border: 1px solid #efefef;
+        }
+
         .username {
           margin-left: 8px;
+          font-size: 18px;
+          transition: all 0.3s;
         }
       }
     }
