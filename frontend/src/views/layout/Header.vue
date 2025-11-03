@@ -31,9 +31,9 @@
       </div>
     </div>
     <div class="header-right">
-      <span v-if="!isLogin"
-        ><el-link type="primary" href="/login">登录</el-link></span
-      >
+      <div v-if="!isLogin" class="login">
+        <el-button round @click="login" class="login-button">登录</el-button>
+      </div>
       <!-- 用户信息 -->
       <div v-else class="user">
         <el-dropdown @command="handleCommand">
@@ -71,6 +71,10 @@ export default {
     }
   },
   methods: {
+    // 跳转到登录
+    login () {
+      this.$router.push('/login')
+    },
     // 处理下拉菜单命令
     handleCommand (command) {
       if (command === 'logout') {
@@ -97,7 +101,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding-top: 4px;
-  border-bottom: 1px solid #dcdcdc;
+  border-bottom: 1px solid #e0e4ed;
   padding-left: 60px;
   padding-right: 120px;
   width: 100%;
@@ -126,6 +130,18 @@ export default {
   }
 
   .header-right {
+    .login {
+      .login-button {
+        border: 1px solid #c3c5cb;
+        transition: all 0.3s;
+
+        &:hover,&:focus {
+          color: #101932;
+          background-color: #f5f5f5;
+        }
+      }
+    }
+
     .user {
       .user-info {
         display: flex;

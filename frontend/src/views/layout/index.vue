@@ -18,8 +18,6 @@ export default {
 
 <style lang="less" scoped>
 .layout {
-  background-color: #efefef;
-
   .layout-content {
     margin: 0px auto;
     padding-top: 100px;
