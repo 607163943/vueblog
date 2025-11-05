@@ -1,10 +1,10 @@
-﻿import axios from 'axios'
+import axios from 'axios'
 import Element from 'element-ui'
 import store from '@/store'
 import router from '@/router'
 
 const instance = axios.create({
-  baseURL: 'http://localhost:9090',
+  baseURL: 'http://localhost:19090',
   timeout: 1000,
   headers: { 'X-Custom-Header': 'foobar' }
 })

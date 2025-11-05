@@ -30,7 +30,7 @@ footer, footer p {
 }
 footer {
     position: relative;
-    padding: 40px 10px 120px 10px;
+    padding: 40px 10px 20px 10px;
     width: 100%;
     color: rgba(102,102,102,0.5);
     margin: 0px auto;

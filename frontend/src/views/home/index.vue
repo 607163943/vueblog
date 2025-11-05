@@ -2,7 +2,7 @@
   <div class="article">
     <div class="list">
       <div class="card" v-for="(article, index) in articleList" :key="index">
-        <router-link :to="`/blog/${article.id}`">
+        <router-link :to="`/article/${article.id}`">
           <el-card>
             <div class="content">
               <div class="left">

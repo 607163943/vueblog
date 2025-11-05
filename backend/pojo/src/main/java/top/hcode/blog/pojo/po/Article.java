@@ -1,7 +1,9 @@
 package top.hcode.blog.pojo.po;
 
-import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -22,11 +24,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @TableName("article")
 public class Article implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
     // id
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     // 作者id
@@ -38,20 +36,19 @@ public class Article implements Serializable {
     // 描述
     private String description;
 
-    // 内容
-    private String content;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @TableField(fill = FieldFill.INSERT)
-    // 创建时间
-    private LocalDateTime createTime;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    // 修改时间
-    private LocalDateTime updateTime;
-
     // 状态 0发布 1草稿 2删除
     private Integer status;
+
+    // 内容
+    private String content;
+
+    // 创建时间
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    // 修改时间
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
     @TableLogic
     // 逻辑删除标志

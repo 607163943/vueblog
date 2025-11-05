@@ -3,8 +3,10 @@ package top.hcode.blog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import top.hcode.blog.common.result.PageResult;
 import top.hcode.blog.pojo.dto.BasePageDTO;
+import top.hcode.blog.pojo.dto.UserArticlePageDTO;
 import top.hcode.blog.pojo.po.Article;
-import top.hcode.blog.pojo.vo.ArticlePageVO;
+import top.hcode.blog.pojo.vo.ArticleHomePageVO;
+import top.hcode.blog.pojo.vo.ArticleTablePageVO;
 
 import java.util.List;
 
@@ -22,5 +24,12 @@ public interface IArticleService extends IService<Article> {
      * @param basePageDTO
      * @return
      */
-    PageResult<List<ArticlePageVO>> pageQuery(BasePageDTO basePageDTO);
+    PageResult<List<ArticleHomePageVO>> pageQuery(BasePageDTO basePageDTO);
+
+    /**
+     * 分页查询用户文章
+     * @param userArticlePageDTO
+     * @return
+     */
+    PageResult<List<ArticleTablePageVO>> userArticlePageQuery(UserArticlePageDTO userArticlePageDTO);
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.hcode.blog.mapper.ArticleMapper">
     <!--分页查询文章-->
-    <select id="pageQuery" resultType="top.hcode.blog.pojo.vo.ArticlePageVO">
+    <select id="pageQuery" resultType="top.hcode.blog.pojo.vo.ArticleHomePageVO">
         select article.id,article.title,article.description,article.content,user.username as author,user.avatar as
         author_avatar,article.update_time from article join user on article.user_id = user.id
         order by article.update_time desc

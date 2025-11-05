@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticlePageVO {
+public class ArticleHomePageVO {
     @ApiModelProperty("文章id")
     private Long id;
 

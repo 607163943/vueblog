@@ -1,6 +1,6 @@
 # DataSource Config
 server:
-  port: 9090
+  port: 19090
 spring:
   profiles:
     active: dev
@@ -48,6 +48,7 @@ mybatis-plus:
     db-config:
       logic-delete-value: 1 # 逻辑已删除值(默认为1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为0)
+      id-type: auto # 主键策略：自增
   type-aliases-package: top.hcode.blog.pojo.po # po实体包
 
 hcode:

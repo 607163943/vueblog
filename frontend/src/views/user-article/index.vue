@@ -13,70 +13,91 @@
           <el-select v-model="searchForm.status" placeholder="文章状态">
             <el-option label="发布" :value="0"></el-option>
             <el-option label="草稿" :value="1"></el-option>
-            <el-option label="已删除" :value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="search">查询</el-button>
+          <el-button type="primary" @click="pageQuery">查询</el-button>
           <el-button type="primary" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- 按钮组 -->
     <div class="button-group">
-      <el-button type="primary" size="small" icon="el-icon-plus" plain
-        >新增</el-button
-      >
-      <el-button type="danger" size="small" icon="el-icon-delete" plain
-        >删除</el-button
-      >
+      <el-button type="primary" size="small" icon="el-icon-plus" @click="$router.push('/article/add')" plain
+        >新增</el-button>
+      <el-button type="danger" @click="deleteArticle" :disabled="selectItems.length<=0" size="small" icon="el-icon-delete" plain
+        >删除</el-button>
     </div>
     <!-- 数据表格 -->
-    <!-- TODO 表格未完成 -->
-    <el-table :data="tableData" style="width: 100%" border>
-      <el-table-column label="日期" width="180">
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.createTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="博文" width="250">
-        <template slot-scope="scope">
-          <i class="el-icon-star-on"></i>
-          <span style="margin-left: 10px">{{ scope.row.title }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="简介" width="260">
-        <template slot-scope="scope">
-          <i class="el-icon-s-order"></i>
-          <span style="margin-left: 10px">{{ scope.row.description }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleLook(scope.$index, scope.row)"
-            >查看</el-button
-          >
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click.native.prevent="handleDelete(scope.$index, tableData)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table">
+      <el-table @selection-change="selectChange" :data="tableData" style="width: 100%" border>
+        <el-table-column type="selection" width="55"> </el-table-column>
+        <el-table-column label="作者" width="250">
+          <template slot-scope="scope">
+            <span>{{ scope.row.userId }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="标题" width="250">
+          <template slot-scope="scope">
+            <span>{{ scope.row.title }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="简介" width="260">
+          <template slot-scope="scope">
+            <span>{{ scope.row.description }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="80">
+          <template slot-scope="scope">
+            <el-tag type="success" v-if="scope.row.status === 0">发布</el-tag>
+            <el-tag type="info" v-else>草稿</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="修改日期" width="160">
+          <template slot-scope="scope">
+            <span>{{ scope.row.updateTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" icon="el-icon-view" @click="handleLook(scope.row)"
+              >查看</el-button>
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-edit"
+              @click="handleEdit(scope.row)"
+              >编辑</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              @click.prevent="handleDelete(scope.row)"
+              >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- 分页 -->
+    <div class="page">
+      <el-pagination
+        @size-change="pageSizeChange"
+        @current-change="pageChange"
+        :current-page="pageParams.page"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageParams.pageSize"
+        layout="total, prev, pager, next, sizes, jumper"
+        :total="total"
+        background
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
-import { articleUserPageQueryService } from '@/api/article'
+import { articleUserPageQueryService, articleBatchDeleteService } from '@/api/article'
 export default {
   data () {
     return {
@@ -90,86 +111,108 @@ export default {
       // 分页参数
       pageParams: {
         page: 1,
-        pageSize: 5
+        pageSize: 10
       },
       // 搜索参数
       searchParams: {
         // 页码
         page: 1,
         // 每页数量
-        pageSize: 5,
+        pageSize: 10,
         // 文章标题
         title: '',
         // 状态
         status: ''
       },
       // 表格数据
-      tableData: []
+      tableData: [],
+      // 选中数据项
+      selectItems: [],
+      // 总条数
+      total: 0
     }
   },
   created () {
     this.pageQuery()
   },
   methods: {
-    search () {
-      this.searchParams = {
-        ...this.searchForm,
-        ...this.pageParams
-      }
-
-      this.pageQuery()
-    },
+    // 重置搜索表单
     reset () {
       this.$refs.searchFormRef.resetFields()
+    },
+
+    // 获取选中项id集合
+    selectChange (items) {
+      this.selectItems = items
     },
     // 分页查询用户文章
     async pageQuery () {
       const username = this.$route.params.username
+
+      this.searchParams = {
+        ...this.searchForm,
+        ...this.pageParams
+      }
       const res = await articleUserPageQueryService(
         username,
         this.searchParams
       )
-      this.tableData = res.data.data
+      this.tableData = res.data.data.result
+      this.total = res.data.data.total
     },
+    // 修改页码
+    pageSizeChange (newPageSize) {
+      this.pageParams.pageSize = newPageSize
+      this.pageQuery()
+    },
+    // 换页
+    pageChange (newPage) {
+      this.pageParams.page = newPage
+      this.pageQuery()
+    },
+    // 文章预览
     handleLook (row) {
       this.$router.push({
         name: 'BlogDetail',
-        params: { blogId: this.tableData[row].id }
+        params: { userId: row.userId }
       })
     },
+    // 编辑文章
     handleEdit (row) {
       this.$router.push({
         name: 'BlogEdit',
-        params: { blogId: this.tableData[row].id }
+        params: { userId: row.userId }
       })
     },
-    handleDelete (index, rows) {
-      this.$confirm('是否删除该博文？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$axios
-            .get('/blog/delete/' + this.tableData[index].id, {
-              headers: {
-                Authorization: localStorage.getItem('token')
-              }
-            })
-            .then((res) => {
-              rows.splice(index, 1)
-            })
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
+    // 删除指定文章
+    handleDelete (row) {
+      this.deleteArticleByIds([row.id])
+    },
+    // 批量删除文章
+    deleteArticle () {
+      const ids = this.selectIds.map(item => item.id)
+      this.deleteArticleByIds(ids)
+    },
+    // 删除文章
+    async deleteArticleByIds (ids) {
+      try {
+        await this.$confirm('是否删除该博文？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+
+        const idArr = ids.join(',')
+        console.log(idArr)
+        await articleBatchDeleteService(idArr)
+
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
         })
+
+        this.pageQuery()
+      } catch (error) {}
     }
   }
 }
@@ -177,10 +220,19 @@ export default {
 
 <style lang="less" scoped>
 .user-article {
-  padding: 0 120px;
+  padding: 0 80px;
 }
 
 .button-group {
   margin-bottom: 10px;
+}
+
+.table {
+  min-height: 400px;
+}
+
+.page {
+  margin-top: 20px;
+  text-align: right;
 }
 </style>

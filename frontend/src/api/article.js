@@ -9,3 +9,23 @@ export const articlePageQueryService = (params) => {
 export const articleUserPageQueryService = (username, params) => {
   return request.get(`/article/user/${username}`, { params: params })
 }
+
+// 创建文章
+export const articleCreateService = (data) => {
+  return request.post('/article/add', data)
+}
+
+// 修改文章
+export const articleUpdateService = (data) => {
+  return request.put('/article/update', data)
+}
+
+// 获取文章
+export const articleGetService = (id) => {
+  return request.get(`/article/${id}`)
+}
+
+// 批量删除文章
+export const articleBatchDeleteService = (ids) => {
+  return request.delete('/article', { params: { ids: ids } })
+}

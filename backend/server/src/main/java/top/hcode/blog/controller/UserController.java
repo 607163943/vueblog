@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.hcode.blog.common.result.CommonResult;
 import top.hcode.blog.pojo.po.User;
-import top.hcode.blog.service.MUserService;
+import top.hcode.blog.service.IUserService;
 
 /**
  * <p>
@@ -24,12 +24,12 @@ import top.hcode.blog.service.MUserService;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final MUserService mUserService;
+    private final IUserService iUserService;
 
     @RequiresAuthentication //需要登录认证才能访问
     @GetMapping("/index")
     public Object test(){
-        User user = mUserService.getById(1L);
+        User user = iUserService.getById(1L);
         return CommonResult.successResponse(user, "操作成功");
     }
 }

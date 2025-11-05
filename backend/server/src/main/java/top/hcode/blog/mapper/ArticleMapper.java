@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import top.hcode.blog.pojo.dto.BasePageDTO;
 import top.hcode.blog.pojo.po.Article;
-import top.hcode.blog.pojo.vo.ArticlePageVO;
+import top.hcode.blog.pojo.vo.ArticleHomePageVO;
 
 /**
  * <p>
@@ -24,5 +24,5 @@ public interface ArticleMapper extends BaseMapper<Article> {
      * @param basePageDTO
      * @return
      */
-    IPage<ArticlePageVO> pageQuery(IPage<ArticlePageVO> page, @Param(Constants.WRAPPER) BasePageDTO basePageDTO);
+    IPage<ArticleHomePageVO> pageQuery(IPage<ArticleHomePageVO> page, @Param(Constants.WRAPPER) BasePageDTO basePageDTO);
 }

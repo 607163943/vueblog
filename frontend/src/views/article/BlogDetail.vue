@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="content">
-      <h1>{{ blog.title }}</h1>
+      <h1>{{ articleDetail.title }}</h1>
       <div class="new-meta-box">
         <div class="new-meta-item">
           <i class="el-icon-user-solid" aria-hidden="true"></i>
-          <h5>{{ blog.author }}</h5>
+          <h5>{{ articleDetail.author }}</h5>
         </div>
         <div class="new-meta-item date">
           <i class="el-icon-s-order" aria-hidden="true"></i>
           <a class="notlink">
-            <p>{{ blog.gmtCreate }}</p>
+            <p>{{ articleDetail.gmtCreate }}</p>
           </a>
         </div>
       </div>
@@ -27,30 +27,60 @@
       <el-divider>
         <i class="el-icon-reading"></i>
       </el-divider>
-      <div class="markdown-body" v-html="blog.content"></div>
+      <div class="markdown-body" v-html="articleDetail.contentHtml"></div>
     </div>
   </div>
 </template>
 
 <script>
+import { articleGetService } from '@/api/article'
 import 'github-markdown-css'
 export default {
   data () {
     return {
-      blog: {
-        id: '',
-        title: '',
-        content: '',
-        gmtStatus: null,
+      // 文章详情
+      articleDetail: {
+        // 作者
         author: '',
+        // 作者id
         userId: '',
-        avatar:
-          'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+        // 作者头像
+        avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+        // 文章id
+        id: '',
+        // 标题
+        title: '',
+        // 内容
+        content: '',
+        // Html内容
+        contentHtml: '',
+        // 发布时间
+        updateTime: ''
       },
       ownBlog: false
     }
   },
+  created () {
+    this.getArticle()
+  },
   methods: {
+    // 获取文章
+    async getArticle () {
+      const userId = this.$route.params.userId
+      if (userId) {
+        const res = await articleGetService(userId)
+        this.articleDetail = res.data.data
+        // 进行css渲染
+        const MardownIt = require('markdown-it')
+        const md = new MardownIt()
+
+        const result = md.render(this.articleDetail.content)
+
+        this.articleDetail.contentHtml = result
+        // 判断是否为该作者，是才能编辑
+        this.ownBlog = this.articleDetail.userId === this.$store.state.user.userInfo.id
+      }
+    },
     toEdit () {
       if (this.$store.state.user.userInfo.id !== this.blog.userId) {
         this.$message({
@@ -98,29 +128,6 @@ export default {
             message: '已取消删除'
           })
         })
-    }
-  },
-  created () {
-    const blogId = this.$route.params.blogId
-    if (blogId) {
-      this.$axios.get('/blog/' + blogId).then((res) => {
-        console.log('aaa')
-        const blog = res.data.data
-        this.blog.id = blog.id
-        this.blog.title = blog.title
-        this.blog.userId = blog.userId
-        this.blog.gmtCreate = blog.gmtCreate
-        this.blog.author = blog.author
-        // 进行css渲染
-        const MardownIt = require('markdown-it')
-        const md = new MardownIt()
-
-        const result = md.render(blog.content)
-
-        this.blog.content = result
-        // 判断是否为该作者，是才能编辑
-        this.ownBlog = blog.userId === this.$store.state.user.userInfo.id
-      })
     }
   }
 }

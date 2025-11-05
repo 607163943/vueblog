@@ -68,6 +68,7 @@
 <script>
 import Footer from '@/views/layout/Footer'
 export default {
+  name: 'RegisterCom',
   components: { Footer },
   data () {
     return {
@@ -82,35 +83,35 @@ export default {
       this.$router.push({ name: 'Login' })
     },
     toRegister () {
-      if (this.username == '') {
+      if (this.username === '') {
         this.$message({
           type: 'warning',
           message: '用户名不能为空！'
         })
         return
       }
-      if (this.email == '') {
+      if (this.email === '') {
         this.$message({
           type: 'warning',
           message: '邮箱不能为空'
         })
         return
       }
-      if (this.password == '' || this.password.length < 6) {
+      if (this.password === '' || this.password.length < 6) {
         this.$message({
           type: 'warning',
           message: '密码不能为空或长度小于6'
         })
         return
       }
-      if (this.password2 == '') {
+      if (this.password2 === '') {
         this.$message({
           type: 'warning',
           message: '确认密码不能为空！'
         })
         return
       }
-      if (this.password != this.password2) {
+      if (this.password !== this.password2) {
         this.$message({
           type: 'danger',
           message: '两次密码不一致，请重新输入！'
@@ -138,10 +139,10 @@ export default {
         })
     },
     reset () {
-      (this.username = ''),
-      (this.email = ''),
-      (this.password = ''),
-      (this.password2 = '')
+      this.username = ''
+      this.email = ''
+      this.password = ''
+      this.password2 = ''
     }
   }
 }

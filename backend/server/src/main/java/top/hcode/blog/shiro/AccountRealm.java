@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.hcode.blog.common.utils.UserContext;
 import top.hcode.blog.pojo.po.User;
-import top.hcode.blog.service.MUserService;
+import top.hcode.blog.service.IUserService;
 import top.hcode.blog.common.utils.JWTUtils;
 
 /**
@@ -24,7 +24,7 @@ public class AccountRealm extends AuthorizingRealm {
     @Autowired
     JWTUtils jwtUtils;
     @Autowired
-    MUserService userService;
+    IUserService userService;
     @Override
     public boolean supports(AuthenticationToken token) {
         return token instanceof JwtToken;

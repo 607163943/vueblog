@@ -18,6 +18,7 @@ public class MyBatisPlusMateObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         log.info("开始新增填充...");
         this.setInsertFieldValByName("createTime", LocalDateTime.now(), metaObject);
+        this.setInsertFieldValByName("updateTime", LocalDateTime.now(), metaObject);
     }
 
     /**

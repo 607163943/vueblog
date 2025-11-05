@@ -20,7 +20,7 @@ import top.hcode.blog.mapper.MUserMapper;
 import top.hcode.blog.pojo.dto.LoginDTO;
 import top.hcode.blog.pojo.dto.RegisterDTO;
 import top.hcode.blog.pojo.po.User;
-import top.hcode.blog.service.MUserService;
+import top.hcode.blog.service.IUserService;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class AccountController {
     private final MUserMapper userServiceDao;
-    private final MUserService userService;
+    private final IUserService userService;
     private final JWTUtils jwtUtils;
 
     @PostMapping("/register")

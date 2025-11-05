@@ -2,36 +2,29 @@ package top.hcode.blog.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.hcode.blog.common.result.CommonResult;
+import top.hcode.blog.common.constant.ArticleExceptionMessage;
+import top.hcode.blog.common.exception.ArticleException;
 import top.hcode.blog.common.result.PageResult;
 import top.hcode.blog.common.result.Result;
 import top.hcode.blog.common.utils.UserContext;
+import top.hcode.blog.pojo.dto.ArticleDTO;
 import top.hcode.blog.pojo.dto.BasePageDTO;
 import top.hcode.blog.pojo.dto.UserArticlePageDTO;
 import top.hcode.blog.pojo.po.Article;
-import top.hcode.blog.pojo.vo.ArticlePageVO;
+import top.hcode.blog.pojo.vo.ArticleHomePageVO;
+import top.hcode.blog.pojo.vo.ArticleTablePageVO;
+import top.hcode.blog.pojo.vo.ArticleVO;
 import top.hcode.blog.service.IArticleService;
-import top.hcode.blog.shiro.ShiroUtil;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * <p>
- *  前端控制器
- * </p>
- *
- * @author Himit_ZH
- * @since 2020-07-19
- */
 @Api(tags = "文章接口")
 @RestController
 @RequestMapping
@@ -46,55 +39,87 @@ public class ArticleController {
      */
     @ApiOperation("分页查询文章")
     @GetMapping("/article")
-    public Result<PageResult<List<ArticlePageVO>>> pageQuery(BasePageDTO basePageDTO) {
+    public Result<PageResult<List<ArticleHomePageVO>>> pageQuery(BasePageDTO basePageDTO) {
         Integer pageNum = basePageDTO.getPage();
         if(pageNum == null || pageNum < 1) basePageDTO.setPage(1);
 
-        PageResult<List<ArticlePageVO>> pageResult = articleService.pageQuery(basePageDTO);
+        PageResult<List<ArticleHomePageVO>> pageResult = articleService.pageQuery(basePageDTO);
         return Result.success(pageResult,"获取成功");
     }
 
-    @GetMapping("/blog/{id}")
-    public CommonResult detail(@PathVariable(name = "id") Long id) {
-        Article blog = articleService.getById(id);
-        Assert.notNull(blog, "该博文已删除！");
-        return CommonResult.successResponse(blog,"查询成功");
-    }
-
-    @RequiresAuthentication
-    @PostMapping("/blog/edit")
-    public CommonResult edit(@Validated @RequestBody Article blog) {
-        Article temp = null;
-        if(blog.getId() != null) {
-            temp = articleService.getById(blog.getId());
-            Assert.isTrue(temp.getUserId().longValue() == ShiroUtil.getProfile().getId().longValue(), "没有权限编辑");
-        } else {
-            temp = new Article();
-            temp.setUserId(ShiroUtil.getProfile().getId());
-            temp.setCreateTime(LocalDateTime.now());
-            temp.setStatus(0);
+    /**
+     * 查询文章详情
+     * @param id
+     * @return
+     */
+    @ApiOperation("查询文章详情")
+    @GetMapping("/article/{id}")
+    public Result<ArticleVO> detail(@PathVariable("id") Long id) {
+        Article article = articleService.getById(id);
+        if(article==null) {
+            throw new ArticleException(ArticleExceptionMessage.ARTICLE_NOT_EXIST);
         }
-        BeanUtil.copyProperties(blog, temp, "id", "userId", "gmtCreate", "status");
-        articleService.saveOrUpdate(temp);
-        return CommonResult.successResponse( null,"操作成功");
+        ArticleVO articleVO = BeanUtil.copyProperties(article, ArticleVO.class);
+        return Result.success(articleVO,"查询成功");
     }
 
+    /**
+     * 修改文章
+     * @param articleDTO
+     * @return
+     */
+    @ApiOperation("修改文章")
     @RequiresAuthentication
-    @GetMapping("/blog/delete/{id}")
-    public CommonResult delete(@PathVariable(name = "id") Long id) {
-        boolean result = articleService.removeById(id);
-        Assert.isTrue(result, "删除失败！该博文不存在！");
-        return CommonResult.successResponse( null,"删除成功");
+    @PutMapping("/article/update")
+    public Result<Object> update(@Validated @RequestBody ArticleDTO articleDTO) {
+        Article article = BeanUtil.copyProperties(articleDTO, Article.class);
+        articleService.updateById(article);
+        return Result.success( null,"操作成功");
     }
 
-    @ApiOperation("获取用户文章")
+    /**
+     * 添加文章
+     * @param articleDTO
+     * @return
+     */
+    @ApiOperation("添加文章")
+    @RequiresAuthentication
+    @PostMapping("/article/add")
+    public Result<Object> add(@Validated @RequestBody ArticleDTO articleDTO) {
+        // 判断文章创作者和登录用户是否为同一人
+        if(!articleDTO.getUserId().equals(UserContext.getUserId())) {
+            throw new ArticleException(ArticleExceptionMessage.USER_NOT_SAME);
+        }
+        Article article = BeanUtil.copyProperties(articleDTO, Article.class);
+        articleService.saveOrUpdate(article);
+        return Result.success( null,"操作成功");
+    }
+
+    /**
+     * 批量删除文章
+     * @param ids
+     * @return
+     */
+    @ApiOperation("批量删除文章")
+    @RequiresAuthentication
+    @DeleteMapping("/article")
+    public Result<Object> deleteByIds(@RequestParam("ids") List<Long> ids) {
+        if(CollectionUtil.isNotEmpty(ids)) {
+            articleService.removeByIds(ids);
+        }
+        return Result.success( null,"删除成功");
+    }
+
+    /**
+     * 分页查询用户文章
+     * @param username
+     * @param userArticlePageDTO
+     * @return
+     */
+    @ApiOperation("分页查询用户文章")
     @GetMapping("/article/user/{username}")
-    public CommonResult getUserBlog(@PathVariable("username") String username, UserArticlePageDTO userArticlePageDTO){
-        Long userId = UserContext.getUserId();
-
-
-        QueryWrapper<Article> wrapper = new QueryWrapper<Article>().eq("user_id", userId).orderByDesc("create_time");
-        List<Article> articles = articleService.list(wrapper);
-        return  CommonResult.successResponse(articles, "查询成功");
+    public Result<PageResult<List<ArticleTablePageVO>>> userArticlePageQuery(@PathVariable("username") String username, UserArticlePageDTO userArticlePageDTO){
+        PageResult<List<ArticleTablePageVO>> articleTablePageVOPageResult=articleService.userArticlePageQuery(userArticlePageDTO);
+        return  Result.success(articleTablePageVOPageResult,"查询成功");
     }
 }

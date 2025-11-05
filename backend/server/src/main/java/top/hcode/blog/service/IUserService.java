@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author Himit_ZH
  * @since 2020-07-19
  */
-public interface MUserService extends IService<User> {
+public interface IUserService extends IService<User> {
 
 }

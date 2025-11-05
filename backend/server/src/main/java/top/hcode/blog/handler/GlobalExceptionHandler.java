@@ -10,16 +10,28 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import top.hcode.blog.common.constant.ResultCodeStatus;
+import top.hcode.blog.common.exception.ArticleException;
 import top.hcode.blog.common.result.CommonResult;
+import top.hcode.blog.common.result.Result;
 
 import java.io.IOException;
 
-/**
- * 全局异常处理
- */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * 处理文章模块业务异常
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ArticleException.class)
+    public Result<Object> articleHandler(ArticleException e) {
+        log.debug("文章模块业务异常:-------------->{}",e.getMessage());
+        return Result.error(ResultCodeStatus.PARAM_ERROR,e.getMessage());
+    }
+
     // 捕捉shiro的异常
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ShiroException.class)
