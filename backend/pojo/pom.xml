@@ -4,12 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>top.hcode</groupId>
+        <groupId>com.project.blog</groupId>
         <artifactId>backend</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>top.hcode.blog</groupId>
     <artifactId>pojo</artifactId>
 
     <properties>
@@ -17,6 +16,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.project.blog</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!--hibernate-validator-->
         <dependency>
             <groupId>jakarta.validation</groupId>
@@ -26,12 +31,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>top.hcode.blog</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

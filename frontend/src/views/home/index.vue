@@ -204,6 +204,10 @@ export default {
   }
 }
 
+.list {
+  min-height: 548px;
+}
+
 .pager {
   margin: 0 auto;
   text-align: center;

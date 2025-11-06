@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/login/Login.vue'
-import Blog from '@/views/home/index.vue'
+import Home from '@/views/home/index.vue'
 import BlogDetail from '@/views/article/BlogDetail.vue'
 import ArticleEdit from '@/views/article/ArticleEdit.vue'
 import Register from '@/views/login/Register.vue'
@@ -15,7 +15,7 @@ const routes = [
     path: '/',
     name: 'Layout',
     component: Layout,
-    redirect: { name: 'Blog' },
+    redirect: { name: 'Home' },
     children: [
       {
         path: '/user/article/:username',
@@ -26,9 +26,9 @@ const routes = [
         }
       },
       {
-        path: '/blog',
-        name: 'Blog',
-        component: Blog
+        path: '/home',
+        name: 'Home',
+        component: Home
       },
       {
         path: '/article/add',

@@ -12,12 +12,12 @@ export const articleUserPageQueryService = (username, params) => {
 
 // 创建文章
 export const articleCreateService = (data) => {
-  return request.post('/article/add', data)
+  return request.post('/article', data)
 }
 
 // 修改文章
 export const articleUpdateService = (data) => {
-  return request.put('/article/update', data)
+  return request.put('/article', data)
 }
 
 // 获取文章
