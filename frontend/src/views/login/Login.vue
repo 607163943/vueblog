@@ -8,8 +8,7 @@
         </div>
         <!-- 登陆表单 -->
         <div class="login-form">
-          <el-form label-position="top" :model="loginForm" :rules="rules" ref="loginFormRef" label-width="100px"
-            @submit.native.prevent="submitForm('loginFormRef')">
+          <el-form label-position="top" :model="loginForm" :rules="rules" ref="loginFormRef" label-width="100px">
             <el-row>
               <el-col :span="24">
                 <el-form-item label="用户名" prop="username">
@@ -66,7 +65,7 @@
 import Footer from '@/views/layout/Footer'
 import { userLoginService } from '@/api/user'
 export default {
-  name: 'LoginCom',
+  name: 'UserLogin',
   components: { Footer },
   data () {
     return {

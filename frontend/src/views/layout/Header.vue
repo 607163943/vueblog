@@ -22,7 +22,7 @@
           active-text-color="#101932"
           router
         >
-          <el-menu-item index="/blog"> 主页 </el-menu-item>
+          <el-menu-item index="/home"> 主页 </el-menu-item>
           <el-menu-item index="/article/add"> 发表博文 </el-menu-item>
           <el-menu-item :index="`/user/article/${userInfo.username}`">
             个人文章
@@ -79,6 +79,8 @@ export default {
     handleCommand (command) {
       if (command === 'logout') {
         this.logout()
+      } else {
+        this.$message.info('该功能暂未实现')
       }
     },
     // 登出

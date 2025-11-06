@@ -66,9 +66,9 @@ export default {
   methods: {
     // 获取文章
     async getArticle () {
-      const userId = this.$route.params.userId
-      if (userId) {
-        const res = await articleGetService(userId)
+      const articleId = this.$route.params.articleId
+      if (articleId) {
+        const res = await articleGetService(articleId)
         this.articleDetail = res.data.data
         // 进行css渲染
         const MardownIt = require('markdown-it')

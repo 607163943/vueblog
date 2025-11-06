@@ -21,32 +21,6 @@ public class CommonResult implements Serializable {
     }
 
 
-    /**
-     * 成功的结果
-     * @param data 返回结果
-     * @param msg  返回信息
-     */
-    public static CommonResult successResponse(Object data, String msg) {
-        return new CommonResult(CommonResult.STATUS_SUCCESS, data, msg);
-    }
-
-    /**
-     * 成功的结果
-     * @param data    返回结果
-     */
-    public  CommonResult successResponse(Object data) {
-        return new CommonResult(CommonResult.STATUS_SUCCESS, data, null);
-    }
-
-    /**
-     * 失败的结果，无异常
-     * @param msg  返回信息
-     */
-    public static CommonResult errorResponse(String msg) {
-        return new CommonResult(CommonResult.STATUS_FAIL, null, msg);
-    }
-
-
     public static CommonResult errorResponse(String msg,Integer status) {
         return new CommonResult(status, null,msg);
     }

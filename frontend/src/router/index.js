@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/login/Login.vue'
 import Home from '@/views/home/index.vue'
-import BlogDetail from '@/views/article/BlogDetail.vue'
+import BlogDetail from '@/views/article/ArticleDetail.vue'
 import ArticleEdit from '@/views/article/ArticleEdit.vue'
 import Register from '@/views/login/Register.vue'
 import UserArticle from '@/views/user-article/index.vue'
@@ -39,7 +39,7 @@ const routes = [
         }
       },
       {
-        path: '/article/:userId',
+        path: '/article/:articleId',
         name: 'BlogDetail',
         component: BlogDetail
       },

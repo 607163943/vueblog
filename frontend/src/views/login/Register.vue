@@ -1,64 +1,48 @@
 <template>
-  <div>
-    <div class="box">
-      <div class="pop-up">
-        <div id="small-dialog" class="mfp-hide book-form">
-          <h3>用&emsp;户&emsp;注&emsp;册</h3>
-          <form>
-            <span>
-              <el-input
-                v-model="username"
-                placeholder="请输入用户名:"
-                required
-              ></el-input>
-            </span>
-            <span>
-              <el-input
-                v-model="email"
-                placeholder="请输入邮箱:"
-                required
-              ></el-input>
-            </span>
-            <span>
-              <el-input
-                v-model="password"
-                placeholder="请输入密码:"
-                clearable
-                required
-              ></el-input>
-            </span>
-            <span>
-              <el-input
-                v-model="password2"
-                placeholder="确认密码:"
-                required
-              ></el-input>
-            </span>
-            <span>
-              <el-button
-                type="primary"
-                plain
-                style="margin-top: 40px"
-                @click="toRegister"
-                >注册</el-button
-              >
-              <el-button
-                type="warning"
-                plain
-                style="margin-top: 40px; margin-right: 40px"
-                @click="reset"
-                >重置</el-button
-              >
-              <el-button
-                type="success"
-                plain
-                style="margin-top: 40px"
-                @click="toLogin"
-                >返回</el-button
-              >
-            </span>
-          </form>
-        </div>
+  <div class="register">
+    <div class="register-container">
+      <div class="register-box">
+        <div class="register-title">用户注册</div>
+        <el-form label-position="top" :model="registerForm" :rules="rules" ref="registerFormRef" label-width="100px">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="用户名" prop="username">
+                <el-input v-model="registerForm.username" placeholder="请输入用户名"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="邮箱" prop="email">
+                <el-input v-model="registerForm.email" placeholder="请输入邮箱"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="密码" prop="password">
+                <el-input v-model="registerForm.password" placeholder="请输入密码" show-password></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="确认密码" prop="confirmPassword">
+                <el-input v-model="registerForm.confirmPassword" placeholder="确认密码" show-password></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row style="margin-top: 20px;">
+            <el-col :span="24">
+              <el-button style="width: 100%;padding: 16px 20px;" type="success" @click="register('registerFormRef')">注册</el-button>
+            </el-col>
+          </el-row>
+          <el-row style="margin-top: 10px;">
+            <el-col :span="24">
+              <el-button style="width: 100%;" @click="$router.back()">回到登录</el-button>
+            </el-col>
+          </el-row>
+        </el-form>
       </div>
     </div>
     <Footer></Footer>
@@ -67,160 +51,108 @@
 
 <script>
 import Footer from '@/views/layout/Footer'
+import { userRegisterService } from '@/api/user'
 export default {
-  name: 'RegisterCom',
+  name: 'UserRegister',
   components: { Footer },
   data () {
     return {
-      username: '',
-      email: '',
-      password: '',
-      password2: ''
+      // 注册表单
+      registerForm: {
+        // 用户名
+        username: '',
+        // 邮箱
+        email: '',
+        // 密码
+        password: '',
+        // 确认密码
+        confirmPassword: ''
+      },
+      // 表单校验规则
+      rules: {
+        username: [
+          { required: true, message: '用户名不能为空！', trigger: 'blur' },
+          {
+            min: 3,
+            max: 15,
+            message: '长度在 3 到 15 个字符',
+            trigger: 'blur'
+          }
+        ],
+        email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          {
+            min: 6,
+            max: 15,
+            message: '密码长度应在 6 到 15 个字符',
+            trigger: 'blur'
+          }
+        ],
+        confirmPassword: [
+          { required: true, message: '确认密码不能为空！', trigger: 'blur' },
+          { validator: this.checkPassword, trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
-    toLogin () {
+    // 注册
+    async register (formName) {
+      await this.$refs[formName].validate()
+
+      await userRegisterService(this.registerForm)
+
+      this.$message.success('注册成功！')
       this.$router.push({ name: 'Login' })
     },
-    toRegister () {
-      if (this.username === '') {
-        this.$message({
-          type: 'warning',
-          message: '用户名不能为空！'
-        })
-        return
+    // 确认密码校验
+    checkPassword (rule, value, callback) {
+      if (value !== this.registerForm.password) {
+        callback(new Error('两次密码不一致，请重新输入！'))
+      } else {
+        callback()
       }
-      if (this.email === '') {
-        this.$message({
-          type: 'warning',
-          message: '邮箱不能为空'
-        })
-        return
-      }
-      if (this.password === '' || this.password.length < 6) {
-        this.$message({
-          type: 'warning',
-          message: '密码不能为空或长度小于6'
-        })
-        return
-      }
-      if (this.password2 === '') {
-        this.$message({
-          type: 'warning',
-          message: '确认密码不能为空！'
-        })
-        return
-      }
-      if (this.password !== this.password2) {
-        this.$message({
-          type: 'danger',
-          message: '两次密码不一致，请重新输入！'
-        })
-        this.password = this.password2 = ''
-        return
-      }
-      this.$axios
-        .post('/register', {
-          username: this.username,
-          password: this.password,
-          email: this.email
-        })
-        .then((res) => {
-          const _this = this
-          this.$notify({
-            title: res.data.msg,
-            message: '恭喜注册成功,5秒后将自动返回登录页面~',
-            type: 'success',
-            duration: 5000,
-            onClose () {
-              _this.$router.push({ name: 'Login' })
-            }
-          })
-        })
-    },
-    reset () {
-      this.username = ''
-      this.email = ''
-      this.password = ''
-      this.password2 = ''
     }
   }
 }
 </script>
 
-<style scoped>
-.box {
-  max-width: 800px;
-  height: 650px;
-  border: 2px solid skyblue;
-  box-shadow: darkgrey 10px 10px 30px 5px;
+<style lang="less" scoped>
+.register {
+  height: 100vh;
+  background-color: #e8e8e8;
+}
+
+.register-container {
+  padding-top: 80px;
+  min-height: 680px;
+}
+
+.register-box {
+  margin: 0 auto;
   border-radius: 15px;
-  margin: 5% auto;
-}
-.el-input {
-  margin-top: 40px;
-}
-.el-button--primary {
-  color: #fff;
-  background-color: #409eff;
-  border-color: #409eff;
-  width: 500px;
-}
-.el-button--warning {
-  width: 230px;
-}
-.el-button--success {
-  width: 230px;
-}
-.el-button + .el-button {
-  margin-left: 0 !important;
-}
-#small-dialog,
-#small-dialog2 {
-  background: #fff;
-  text-align: left;
-  max-width: 500px;
-  margin: 40px auto;
-  position: relative;
-}
-span {
-  margin-top: 50px;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Montserrat", sans-serif;
+  padding: 0 40px;
+  padding-top: 20px;
+  padding-bottom: 40px;
+  width: 550px;
+  background-color: #fff;
+
+  ::v-deep(.el-form-item) {
+    margin-bottom: 12px;
+  }
+
+  ::v-deep(.el-form--label-top .el-form-item__label) {
+    padding: 0;
+  }
+
+  ::v-deep(.el-form-item__label) {
+    line-height: 24px;
+  }
 }
 
-form {
-  display: block;
-  margin-top: 0em;
-}
-
-input {
-  -webkit-writing-mode: horizontal-tb !important;
-  text-rendering: auto;
-  color: -internal-light-dark(black, white);
-  letter-spacing: normal;
-  word-spacing: normal;
-  text-transform: none;
-  text-indent: 0px;
-  text-shadow: none;
-  display: inline-block;
-  text-align: start;
-  appearance: textfield;
-  background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
-  -webkit-rtl-ordering: logical;
-  cursor: text;
-  margin: 0em;
-  font: 400 13.3333px Arial;
-  padding: 1px 2px;
-  border-width: 2px;
-  border-style: inset;
-  border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
-  border-image: initial;
+.register-title {
+  font-size: 20px;
+  text-align: center;
 }
 </style>

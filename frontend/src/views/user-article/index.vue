@@ -174,7 +174,7 @@ export default {
     handleLook (row) {
       this.$router.push({
         name: 'BlogDetail',
-        params: { userId: row.userId }
+        params: { articleId: row.id }
       })
     },
     // 编辑文章
