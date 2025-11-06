@@ -20,8 +20,9 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="密码" prop="password">
-                  <el-input type="password" v-model="loginForm.password" @keyup.enter.native="submitForm('loginFormRef')"
-                    prefix-icon="el-icon-lock" show-password placeholder="输入密码"></el-input>
+                  <el-input type="password" v-model="loginForm.password"
+                    @keyup.enter.native="submitForm('loginFormRef')" prefix-icon="el-icon-lock" show-password
+                    placeholder="输入密码"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -116,8 +117,13 @@ export default {
       this.$store.commit('user/setToken', token)
       this.$store.commit('user/setUserInfo', userInfo)
 
-      // 跳转到首页
-      this.$router.push({ name: 'Home' })
+      // 跳转到登录前的页面
+      if (this.$route.query.redirect) {
+        this.$router.push({ path: this.$route.query.redirect })
+      } else {
+        // 跳转到首页
+        this.$router.push({ name: 'Home' })
+      }
     }
   }
 }
@@ -125,7 +131,7 @@ export default {
 
 <style lang="less" scoped>
 .login {
-  height: 100vh;
+  min-height: 100vh;
   background-color: #e8e8e8;
 }
 

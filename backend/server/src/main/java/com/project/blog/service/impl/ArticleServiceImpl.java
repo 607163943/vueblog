@@ -5,23 +5,23 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import com.project.blog.common.constant.CommonConstant;
+import com.project.blog.common.constant.ArticleStatus;
 import com.project.blog.common.result.PageResult;
 import com.project.blog.common.utils.UserContext;
 import com.project.blog.mapper.ArticleMapper;
 import com.project.blog.pojo.dto.BasePageDTO;
 import com.project.blog.pojo.dto.UserArticlePageDTO;
 import com.project.blog.pojo.po.Article;
+import com.project.blog.pojo.vo.ArticleDetailVO;
 import com.project.blog.pojo.vo.ArticleHomePageVO;
 import com.project.blog.pojo.vo.ArticleTablePageVO;
+import com.project.blog.pojo.vo.AuthorArticlePublishCountVO;
 import com.project.blog.service.IArticleService;
 import com.project.blog.service.IUserService;
-import com.project.blog.pojo.po.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,34 +58,56 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
         Long userId = UserContext.getUserId();
 
-        // TODO 改用join SQL实现
-
         // 分页查询用户文章
-        page = this.lambdaQuery()
-                .eq(userId != null, Article::getUserId, userId)
+        page=this.lambdaQuery()
+                .eq(userId!=null, Article::getUserId, userId)
                 .like(StrUtil.isNotBlank(userArticlePageDTO.getTitle()), Article::getTitle, userArticlePageDTO.getTitle())
-                .eq(userArticlePageDTO.getStatus() != null, Article::getStatus, userArticlePageDTO.getStatus())
+                .eq(userArticlePageDTO.getStatus()!=null, Article::getStatus, userArticlePageDTO.getStatus())
                 .orderByDesc(Article::getUpdateTime)
                 .page(page);
 
         List<ArticleTablePageVO> articleTablePageVOS = BeanUtil.copyToList(page.getRecords(), ArticleTablePageVO.class);
 
-        // 获取作者id集合
-        List<Long> userIds = articleTablePageVOS.stream().map(ArticleTablePageVO::getUserId).collect(Collectors.toList());
-
-        // 查询作者并转成作者id和作者名的map
-        Map<Long, String> userNameMap = userService.lambdaQuery().in(User::getId, userIds).list()
-                .stream().collect(Collectors.toMap(User::getId, User::getUsername));
-
-        // 添加文章作者名
-        articleTablePageVOS.stream().map(articleTablePageVO -> {
-            articleTablePageVO.setAuthor(userNameMap.getOrDefault(articleTablePageVO.getUserId(), CommonConstant.DEFAULT_AUTHOR));
-            return articleTablePageVO;
-        });
-
         return PageResult.<List<ArticleTablePageVO>>builder()
                 .result(articleTablePageVOS)
                 .total(page.getTotal())
+                .build();
+    }
+
+    /**
+     * 查询文章详情
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public ArticleDetailVO detail(Long id) {
+        return this.baseMapper.detail(id);
+    }
+
+    /**
+     * 统计作者创作信息
+     * @param authorId
+     * @return
+     */
+    @Override
+    public AuthorArticlePublishCountVO countAuthorArticlePublishCount(Long authorId) {
+        // 统计作者发布文章数
+        Integer publishCount = this.lambdaQuery()
+                .eq(authorId != null, Article::getUserId, authorId)
+                .eq(Article::getStatus, ArticleStatus.PUBLISH)
+                .count();
+
+        // 统计作者最近一周发布文章数
+        Integer recentPublishCount = this.lambdaQuery()
+                .eq(authorId != null, Article::getUserId, authorId)
+                .eq(Article::getStatus, ArticleStatus.PUBLISH)
+                .ge(Article::getCreateTime, System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000)
+                .count();
+
+        return AuthorArticlePublishCountVO.builder()
+                .publishCount(publishCount)
+                .recentPublishCount(recentPublishCount)
                 .build();
     }
 }

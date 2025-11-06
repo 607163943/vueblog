@@ -2,6 +2,10 @@ package com.project.blog.shiro;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.project.blog.common.constant.ResultCodeStatus;
+import com.project.blog.common.result.Result;
+import com.project.blog.common.utils.JWTUtils;
+import com.project.blog.common.utils.UserContext;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.ExpiredCredentialsException;
@@ -10,9 +14,6 @@ import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
-import com.project.blog.common.result.CommonResult;
-import com.project.blog.common.utils.JWTUtils;
-import com.project.blog.common.utils.UserContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -58,7 +59,7 @@ public class JwtFilter extends AuthenticatingFilter {
         try {
             //处理登录失败的异常
             Throwable throwable = e.getCause() == null ? e : e.getCause();
-            CommonResult result = CommonResult.errorResponse(throwable.getMessage(),CommonResult.STATUS_ERROR);
+            Result<Object> result = Result.error(ResultCodeStatus.SERVER_ERROR,throwable.getMessage());
             String json = JSONUtil.toJsonStr(result);
             httpResponse.getWriter().print(json);
         } catch (IOException e1) {

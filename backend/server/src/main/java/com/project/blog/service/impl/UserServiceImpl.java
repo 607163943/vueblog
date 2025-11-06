@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.project.blog.common.constant.UserExceptionMessage;
+import com.project.blog.common.constant.UserStatus;
 import com.project.blog.common.exception.UserException;
 import com.project.blog.common.utils.JWTUtils;
 import com.project.blog.mapper.UserMapper;
@@ -65,7 +66,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         User registerUser = BeanUtil.copyProperties(registerDTO, User.class);
-        registerUser.setStatus(0);
+        registerUser.setStatus(UserStatus.ACTIVE);
         registerUser.setPassword(SecureUtil.md5(registerDTO.getPassword()));
 
         boolean saved = this.save(registerUser);

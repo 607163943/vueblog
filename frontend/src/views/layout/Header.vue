@@ -98,7 +98,7 @@ export default {
 .layout-header {
   position: fixed;
   top: 0;
-  z-index: 1000;
+  z-index: 1600;
   display: flex;
   justify-content: space-between;
   align-items: center;

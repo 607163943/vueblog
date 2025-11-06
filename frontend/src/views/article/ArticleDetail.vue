@@ -1,40 +1,57 @@
 <template>
-  <div>
-    <div class="content">
-      <h1>{{ articleDetail.title }}</h1>
-      <div class="new-meta-box">
-        <div class="new-meta-item">
-          <i class="el-icon-user-solid" aria-hidden="true"></i>
-          <h5>{{ articleDetail.author }}</h5>
+  <div class="article-detail">
+    <div class="author">
+      <!-- 作者信息 -->
+      <div class="author-info">
+        <div class="author-pic">
+          <el-avatar :size="100" :src="articleDetail.avatar ? articleDetail.avatar : defaultAvatar"></el-avatar>
         </div>
-        <div class="new-meta-item date">
-          <i class="el-icon-s-order" aria-hidden="true"></i>
-          <a class="notlink">
-            <p>{{ articleDetail.gmtCreate }}</p>
-          </a>
-        </div>
+        <div class="author-name">{{ articleDetail.author }}</div>
+      </div>
+      <!-- 作者创作信息 -->
+      <div class="author-publish-info">
+        <!-- 作者发布文章数 -->
+        <el-row>
+          <el-col :span="8" :offset="4">创作</el-col>
+          <el-col :span="12">最近发布</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="3" :offset="4" style="text-align: center;">{{ authorPublishCount.publishCount }}</el-col>
+          <el-col :span="2" :offset="7" style="text-align: center;">{{ authorPublishCount.recentPublishCount }}</el-col>
+        </el-row>
       </div>
 
-      <el-button-group class="button">
-        <el-button type="primary" icon="el-icon-edit" @click="toEdit"
-          >编辑</el-button
-        >
-        <el-button type="danger" icon="el-icon-delete" @click="toDelete"
-          >删除</el-button
-        >
-      </el-button-group>
-
-      <el-divider>
-        <i class="el-icon-reading"></i>
-      </el-divider>
-      <div class="markdown-body" v-html="articleDetail.contentHtml"></div>
+      <!-- 作者创作快捷按钮 -->
+      <div class="author-button" v-if="this.ownArticle">
+        <el-button type="primary" size="small" icon="el-icon-edit" @click="toEdit">编辑此文章</el-button>
+        <el-button type="danger" size="small" icon="el-icon-delete" @click="toDelete">删除此文章</el-button>
+      </div>
+    </div>
+    <div class="article">
+      <!-- 文章标题 -->
+      <div class="article-title">
+        <h1>{{ articleDetail.title }}</h1>
+      </div>
+      <!-- 文章元信息 -->
+      <div class="author-meta">
+        <!-- 发布时间 -->
+        <div class="publish-date">
+          <i class="el-icon-date"></i>
+          {{ articleDetail.updateTime }}
+        </div>
+      </div>
+      <!-- 文章内容 -->
+      <div class="article-content">
+        <div class="markdown-body" v-html="articleDetail.contentHtml"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { articleGetService } from '@/api/article'
 import 'github-markdown-css'
+import { articleBatchDeleteService, articleGetDetailService, articleAuthorInfoService } from '@/api/article'
+import MDUtils from '@/utils/MDUtils'
 export default {
   data () {
     return {
@@ -45,7 +62,7 @@ export default {
         // 作者id
         userId: '',
         // 作者头像
-        avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+        avatar: '',
         // 文章id
         id: '',
         // 标题
@@ -57,32 +74,51 @@ export default {
         // 发布时间
         updateTime: ''
       },
-      ownBlog: false
+      // 作者创作统计数据
+      authorPublishCount: {
+        // 发布文章数
+        publishCount: 0,
+        // 最近发布文章数
+        recentPublishCount: 0
+      },
+      // 默认头像
+      defaultAvatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+      // 是否为作者
+      ownArticle: false
     }
   },
   created () {
     this.getArticle()
   },
   methods: {
-    // 获取文章
+    // 获取文章详情
     async getArticle () {
       const articleId = this.$route.params.articleId
       if (articleId) {
-        const res = await articleGetService(articleId)
+        const res = await articleGetDetailService(articleId)
         this.articleDetail = res.data.data
         // 进行css渲染
-        const MardownIt = require('markdown-it')
-        const md = new MardownIt()
-
-        const result = md.render(this.articleDetail.content)
+        const result = MDUtils.render(this.articleDetail.content)
 
         this.articleDetail.contentHtml = result
         // 判断是否为该作者，是才能编辑
-        this.ownBlog = this.articleDetail.userId === this.$store.state.user.userInfo.id
+        this.ownArticle = this.articleDetail.userId === this.$store.state.user.userInfo.id
+        // 获取作者文章创作信息
+        this.getAuthorCreateInfo(this.articleDetail.userId)
       }
     },
+    // 获取作者文章创作信息
+    async getAuthorCreateInfo (authorId) {
+      try {
+        const res = await articleAuthorInfoService(authorId)
+        this.authorPublishCount = res.data.data
+      } catch (error) {
+        this.$message.error('获取作者创作数据失败！')
+      }
+    },
+    // 跳转到编辑页面
     toEdit () {
-      if (this.$store.state.user.userInfo.id !== this.blog.userId) {
+      if (!this.ownArticle) {
         this.$message({
           type: 'error',
           message: '对不起！你并非博文发布者无法编辑修改！'
@@ -90,102 +126,104 @@ export default {
       } else {
         this.$router.push({
           name: 'BlogEdit',
-          params: { blogId: this.blog.id }
+          params: { userId: this.articleDetail.id }
         })
       }
     },
-    toDelete () {
-      this.$confirm('是否删除该博文？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          if (this.$store.getters.getUserInfo.id !== this.blog.userId) {
-            this.$message({
-              type: 'error',
-              message: '删除失败！对不起，你并非博文作者无权限删除!'
-            })
-          } else {
-            this.$axios
-              .get('/blog/delete/' + this.blog.id, {
-                headers: {
-                  Authorization: localStorage.getItem('token')
-                }
-              })
-              .then((res) => {
-                this.$router.push({ name: 'Blog' })
-              })
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-          }
+    async toDelete () {
+      try {
+        await this.$confirm('是否删除该博文？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
-        .catch(() => {
+
+        if (this.ownArticle) {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: 'error',
+            message: '删除失败！对不起，你并非博文作者无权限删除!'
           })
-        })
+          return
+        }
+
+        try {
+          await articleBatchDeleteService([this.articleDetail.id])
+          // 跳转到首页
+          this.$router.push({ name: 'Home' })
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        } catch (error) {
+          this.$message({
+            type: 'error',
+            message: '删除失败！'
+          })
+        }
+      } catch (error) { }
     }
   }
 }
 </script>
 
-<style scoped>
-.button {
-  padding-left: 200px;
+<style lang="less" scoped>
+.article-detail {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -60px;
+  padding: 0 72px;
+  padding-top: 60px;
+  padding-bottom: 16px;
+  min-height: 84vh;
+  background-color: #f2f2f2;
 }
-.new-meta-item a {
-  text-decoration: none;
-  color: rgba(68, 68, 68, 0.65);
-  padding-left: 0;
-  padding-right: 4px;
+
+.author {
+  border-radius: 6px;
+  padding: 16px;
+  width: 22%;
+  height: 220px;
+  background-color: #fff;
 }
-.new-meta-box {
-  padding-left: 400px;
-  -webkit-transition: all 0.1s ease;
-  font-size: 0.8125rem;
-  padding-top: px;
-  padding-bottom: 2px;
+
+.author-info {
   display: flex;
   align-items: center;
-  float: left;
-  flex-wrap: wrap;
 }
-.new-meta-item {
-  color: rgba(68, 68, 68, 0.65);
+
+.author-pic {
+  margin-left: 10px;
+
+  ::v-deep(.el-avatar--circle) {
+    border: 1px solid #efefef;
+  }
+}
+
+.author-name {
+  margin-left: 16px;
+  font-size: 32px;
+  color: #222226;
+}
+
+.author-button {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px;
-  margin: 0 8px 0 0;
-  border-radius: 4px;
+  justify-content: space-around;
 }
-.content {
-  padding: 20px 15px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  width: 100%;
-  min-height: 700px;
+
+.article {
+  border-radius: 6px;
+  padding: 16px;
+  width: 77%;
+  background-color: #fff;
 }
-.edit {
-  color: skyblue;
-  text-decoration: none;
+
+.author-publish-info {
+  margin-top: 10px;
 }
-.edit:hover {
-  color: red;
-  scale: 1;
-}
-h1 {
-  padding: calc(var(--sp) / 2) 0 var(--sp);
-  text-align: center;
-  transition: color 0.6s;
-  color: var(--t);
-  margin: 2.75rem 0 1rem;
-  font-family: Product Sans, Oswald, -apple-system, BlinkMacSystemFont, Segoe UI,
-    Helvetica, Arial, sans-serif;
-  font-weight: 600;
-  line-height: 1.5;
+
+.publish-date {
+  margin-top: 12px;
+  margin-bottom: 20px;
+  color: #888888;
 }
 </style>

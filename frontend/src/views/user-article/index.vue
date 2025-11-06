@@ -32,33 +32,28 @@
     <div class="table">
       <el-table @selection-change="selectChange" :data="tableData" style="width: 100%" border>
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column label="作者" width="250">
-          <template slot-scope="scope">
-            <span>{{ scope.row.userId }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="标题" width="250">
+        <el-table-column label="标题" width="250" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="简介" width="260">
+        <el-table-column label="简介" width="260" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.description }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="80">
+        <el-table-column label="状态" width="160" align="center">
           <template slot-scope="scope">
             <el-tag type="success" v-if="scope.row.status === 0">发布</el-tag>
             <el-tag type="info" v-else>草稿</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="修改日期" width="160">
+        <el-table-column label="修改日期" width="240" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.updateTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="mini" icon="el-icon-view" @click="handleLook(scope.row)"
               >查看</el-button>

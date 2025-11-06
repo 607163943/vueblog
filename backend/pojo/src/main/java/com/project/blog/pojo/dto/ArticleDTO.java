@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @ApiModel("文章DTO")
 @Data
@@ -17,7 +18,7 @@ public class ArticleDTO {
     private Long id;
 
     @ApiModelProperty("作者id")
-    @NotBlank(message = "作者id不能为空")
+    @NotNull(message = "作者id不能为空")
     private Long userId;
 
     @ApiModelProperty("文章标题")
@@ -32,6 +33,6 @@ public class ArticleDTO {
     private String content;
 
     @ApiModelProperty("文章状态")
-    @NotBlank(message = "文章状态不能为空")
+    @NotNull(message = "文章状态不能为空")
     private Integer status;
 }

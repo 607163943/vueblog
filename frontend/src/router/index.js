@@ -75,11 +75,11 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
     const token = store.state.user.token
-    if (token) { // 判断当前的token是否存在 ； 登录存入的token
+    if (token) { // 判断当前的token是否存在
       next()
     } else {
-      next({
-        path: '/login'
+      router.push({
+        path: '/login', query: { redirect: to.fullPath }
       })
     }
   } else {

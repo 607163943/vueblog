@@ -4,7 +4,6 @@ package com.project.blog.handler;
 import com.project.blog.common.constant.ResultCodeStatus;
 import com.project.blog.common.exception.ArticleException;
 import com.project.blog.common.exception.UserException;
-import com.project.blog.common.result.CommonResult;
 import com.project.blog.common.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.ShiroException;
@@ -55,17 +54,17 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public CommonResult handler(MethodArgumentNotValidException e) {
+    public Result<Object> handler(MethodArgumentNotValidException e) {
         log.error("参数校验异常:-------------->",e);
         BindingResult bindingResult = e.getBindingResult();
         ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
-        return CommonResult.errorResponse(objectError.getDefaultMessage(),CommonResult.STATUS_FAIL);
+        return Result.error(ResultCodeStatus.PARAM_ERROR,objectError.getDefaultMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = RuntimeException.class)
-    public CommonResult handler(RuntimeException e) {
+    public Result<Object> handler(RuntimeException e) {
         log.error("运行时异常:-------------->",e);
-        return CommonResult.errorResponse(e.getMessage(),CommonResult.STATUS_ERROR);
+        return Result.error(ResultCodeStatus.SERVER_ERROR,e.getMessage());
     }
 }

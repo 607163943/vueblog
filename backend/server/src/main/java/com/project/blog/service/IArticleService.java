@@ -5,8 +5,10 @@ import com.project.blog.common.result.PageResult;
 import com.project.blog.pojo.dto.BasePageDTO;
 import com.project.blog.pojo.dto.UserArticlePageDTO;
 import com.project.blog.pojo.po.Article;
+import com.project.blog.pojo.vo.ArticleDetailVO;
 import com.project.blog.pojo.vo.ArticleHomePageVO;
 import com.project.blog.pojo.vo.ArticleTablePageVO;
+import com.project.blog.pojo.vo.AuthorArticlePublishCountVO;
 
 import java.util.List;
 
@@ -24,4 +26,18 @@ public interface IArticleService extends IService<Article> {
      * @return
      */
     PageResult<List<ArticleTablePageVO>> userArticlePageQuery(UserArticlePageDTO userArticlePageDTO);
+
+    /**
+     * 查询文章详情
+     * @param id
+     * @return
+     */
+    ArticleDetailVO detail(Long id);
+
+    /**
+     * 统计作者创作信息
+     * @param authorId
+     * @return
+     */
+    AuthorArticlePublishCountVO countAuthorArticlePublishCount(Long authorId);
 }

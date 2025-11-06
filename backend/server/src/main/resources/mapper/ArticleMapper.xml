@@ -8,4 +8,11 @@
         where article.deleted = 0
         order by article.update_time desc
     </select>
+    <!--查询文章详情-->
+    <select id="detail" resultType="com.project.blog.pojo.vo.ArticleDetailVO">
+        select article.id, article.title, article.content, article.update_time, user.id as user_id, user.username as author, user.avatar
+        from article
+                 join user on article.user_id = user.id
+        where article.id = #{id}
+    </select>
 </mapper>

@@ -120,7 +120,7 @@ export default {
 
 <style lang="less" scoped>
 .register {
-  height: 100vh;
+  min-height: 100vh;
   background-color: #e8e8e8;
 }
 
