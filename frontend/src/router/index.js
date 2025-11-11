@@ -44,7 +44,7 @@ const routes = [
         component: BlogDetail
       },
       {
-        path: '/article/edit/:userId',
+        path: '/article/edit/:articleId',
         name: 'BlogEdit',
         component: ArticleEdit,
         meta: {

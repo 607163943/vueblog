@@ -2,6 +2,7 @@ package com.project.blog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.project.blog.common.result.PageResult;
+import com.project.blog.pojo.dto.ArticleDTO;
 import com.project.blog.pojo.dto.BasePageDTO;
 import com.project.blog.pojo.dto.UserArticlePageDTO;
 import com.project.blog.pojo.po.Article;
@@ -43,4 +44,16 @@ public interface IArticleService extends IService<Article> {
      * @return
      */
     List<ArticleNewVO> getNewArticle();
+
+    /**
+     * 修改文章
+     * @param articleDTO
+     */
+    void updateArticle(ArticleDTO articleDTO);
+
+    /**
+     * 添加文章
+     * @param articleDTO
+     */
+    void add(ArticleDTO articleDTO);
 }

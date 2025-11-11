@@ -176,7 +176,7 @@ export default {
     handleEdit (row) {
       this.$router.push({
         name: 'BlogEdit',
-        params: { userId: row.userId }
+        params: { articleId: row.id }
       })
     },
     // 删除指定文章

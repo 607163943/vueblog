@@ -1,11 +1,6 @@
 <template>
   <div class="article-edit">
-    <el-form
-      :model="ArticleForm"
-      :rules="rules"
-      ref="ArticleFormRef"
-      label-width="60px"
-    >
+    <el-form :model="ArticleForm" :rules="rules" ref="ArticleFormRef" label-width="60px">
       <el-form-item label="标题" prop="title">
         <el-input v-model="ArticleForm.title"></el-input>
       </el-form-item>
@@ -15,15 +10,13 @@
       </el-form-item>
 
       <el-form-item label="内容" prop="content">
-        <mavon-editor v-model="ArticleForm.content" class="editor">
+        <mavon-editor v-model="ArticleForm.content" class="editor" ref="md" @imgAdd="onImgAdd">
         </mavon-editor>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ArticleFormRef', 0)"
-          >发布</el-button>
-        <el-button @click="submitForm('ArticleFormRef', 1)"
-          >保存为草稿</el-button>
+        <el-button type="primary" @click="submitForm('ArticleFormRef', 0)">发布</el-button>
+        <el-button @click="submitForm('ArticleFormRef', 1)">保存为草稿</el-button>
         <el-button @click="resetForm('ArticleFormRef')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -32,9 +25,12 @@
 
 <script>
 import { articleCreateService, articleGetService, articleUpdateService } from '@/api/article'
+import { uploadImageService, getTempIdService } from '@/api/upload'
 export default {
   data () {
     return {
+      // uuid
+      tempId: '',
       // 文章表单
       ArticleForm: {
         // 文章id
@@ -71,15 +67,30 @@ export default {
     }
   },
   created () {
+    this.getTempId()
     this.getArticle()
   },
   methods: {
+    // 获取tempId
+    async getTempId () {
+      const res = await getTempIdService()
+      this.tempId = res.data.data
+    },
+    // 上传图片并回显
+    async onImgAdd (pos, file) {
+      const form = new FormData()
+      form.append('file', file)
+      // 1) 传给你的后端
+      const res = await uploadImageService(form, this.tempId, this.$store.state.user.userInfo.id)
+      // 2) 用返回的 URL 替换编辑器中的占位
+      this.$refs.md.$img2Url(pos, res.data.data)
+    },
     // 获取文章
     async getArticle () {
-      const userId = this.$route.params.userId
-      if (userId) {
+      const articleId = this.$route.params.articleId
+      if (articleId) {
         try {
-          const res = await articleGetService(userId)
+          const res = await articleGetService(articleId)
 
           this.ArticleForm = res.data.data
         } catch (error) {
@@ -92,7 +103,13 @@ export default {
       await this.$refs[formName].validate()
 
       this.ArticleForm.status = status
-      this.addArticle()
+      // 补全tempId
+      this.ArticleForm.tempId = this.tempId
+      if (this.ArticleForm.id) {
+        this.updateArticle()
+      } else {
+        this.addArticle()
+      }
     },
     // 添加文章
     async addArticle () {

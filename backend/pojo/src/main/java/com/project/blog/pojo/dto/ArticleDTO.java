@@ -14,6 +14,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticleDTO {
+    @ApiModelProperty("临时id")
+    private String tempId;
+
     @ApiModelProperty("文章id")
     private Long id;
 

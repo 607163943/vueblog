@@ -1,30 +1,43 @@
 package com.project.blog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.project.blog.common.constant.ArticleExceptionMessage;
 import com.project.blog.common.constant.ArticleStatus;
+import com.project.blog.common.exception.ArticleException;
 import com.project.blog.common.result.PageResult;
+import com.project.blog.common.utils.MdObjectKeyPickerUtils;
 import com.project.blog.common.utils.UserContext;
 import com.project.blog.mapper.ArticleMapper;
+import com.project.blog.pojo.dto.ArticleDTO;
 import com.project.blog.pojo.dto.BasePageDTO;
 import com.project.blog.pojo.dto.UserArticlePageDTO;
 import com.project.blog.pojo.po.Article;
+import com.project.blog.pojo.po.ImageAsset;
 import com.project.blog.pojo.vo.*;
 import com.project.blog.service.IArticleService;
-import com.project.blog.service.IUserService;
-import lombok.RequiredArgsConstructor;
+import com.project.blog.service.IImageAssetService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements IArticleService {
 
-    private final IUserService userService;
+    @Resource
+    private IImageAssetService imageAssetService;
+
+    @Lazy
+    @Resource
+    private IArticleService articleService;
 
     /**
      * 分页查询文章
@@ -118,5 +131,50 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         page = this.lambdaQuery().orderByDesc(Article::getUpdateTime).page(page);
         List<ArticleNewVO> articleNewVOS = BeanUtil.copyToList(page.getRecords(), ArticleNewVO.class);
         return articleNewVOS;
+    }
+
+    /**
+     * 修改文章
+     * @param articleDTO
+     */
+    @Transactional
+    @Override
+    public void updateArticle(ArticleDTO articleDTO) {
+        // 标记使用图片
+        Set<String> strings = MdObjectKeyPickerUtils.extractKeys(articleDTO.getContent());
+        imageAssetService.lambdaUpdate()
+                .in(CollectionUtil.isNotEmpty(strings), ImageAsset::getObjectKey, strings)
+                .eq(StrUtil.isNotBlank(articleDTO.getTempId()), ImageAsset::getTempId, articleDTO.getTempId())
+                .set(ImageAsset::getStatus,1)
+                .set(ImageAsset::getTempId,null)
+                .update();
+
+        Article article = BeanUtil.copyProperties(articleDTO, Article.class);
+        articleService.updateById(article);
+    }
+
+    /**
+     * 添加文章
+     * @param articleDTO
+     */
+    @Transactional
+    @Override
+    public void add(ArticleDTO articleDTO) {
+        // 判断文章创作者和登录用户是否为同一人
+        if(!articleDTO.getUserId().equals(UserContext.getUserId())) {
+            throw new ArticleException(ArticleExceptionMessage.USER_NOT_SAME);
+        }
+        Article article = BeanUtil.copyProperties(articleDTO, Article.class);
+        articleService.save(article);
+
+        // 标记使用图片
+        Set<String> strings = MdObjectKeyPickerUtils.extractKeys(articleDTO.getContent());
+        imageAssetService.lambdaUpdate()
+                .in(CollectionUtil.isNotEmpty(strings), ImageAsset::getObjectKey, strings)
+                .eq(StrUtil.isNotBlank(articleDTO.getTempId()), ImageAsset::getTempId, articleDTO.getTempId())
+                .set(ImageAsset::getStatus,1)
+                .set(ImageAsset::getArticleId,article.getId())
+                .set(ImageAsset::getTempId,null)
+                .update();
     }
 }
