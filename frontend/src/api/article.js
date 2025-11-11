@@ -25,6 +25,11 @@ export const articleGetService = (id) => {
   return request.get(`/article/${id}`)
 }
 
+// 获取最新文章(5篇)
+export const articleGetNewArticleListService = () => {
+  return request.get('/article/new')
+}
+
 // 获取文章详情
 export const articleGetDetailService = (id) => {
   return request.get(`/article/detail/${id}`)

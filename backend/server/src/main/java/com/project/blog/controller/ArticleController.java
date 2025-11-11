@@ -46,6 +46,17 @@ public class ArticleController {
     }
 
     /**
+     * 查询最新文章
+     * @return
+     */
+    @ApiOperation("查询最新文章")
+    @GetMapping("/new")
+    public Result<List<ArticleNewVO>> getNewArticle() {
+        List<ArticleNewVO> articleNewVOS = articleService.getNewArticle();
+        return Result.success(articleNewVOS,"查询成功");
+    }
+
+    /**
      * 查询文章
      * @param id
      * @return

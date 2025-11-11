@@ -12,10 +12,7 @@ import com.project.blog.mapper.ArticleMapper;
 import com.project.blog.pojo.dto.BasePageDTO;
 import com.project.blog.pojo.dto.UserArticlePageDTO;
 import com.project.blog.pojo.po.Article;
-import com.project.blog.pojo.vo.ArticleDetailVO;
-import com.project.blog.pojo.vo.ArticleHomePageVO;
-import com.project.blog.pojo.vo.ArticleTablePageVO;
-import com.project.blog.pojo.vo.AuthorArticlePublishCountVO;
+import com.project.blog.pojo.vo.*;
 import com.project.blog.service.IArticleService;
 import com.project.blog.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -109,5 +106,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .publishCount(publishCount)
                 .recentPublishCount(recentPublishCount)
                 .build();
+    }
+
+    /**
+     * 查询最新文章
+     * @return
+     */
+    @Override
+    public List<ArticleNewVO> getNewArticle() {
+        IPage<Article> page = new Page<>(1, 5);
+        page = this.lambdaQuery().orderByDesc(Article::getUpdateTime).page(page);
+        List<ArticleNewVO> articleNewVOS = BeanUtil.copyToList(page.getRecords(), ArticleNewVO.class);
+        return articleNewVOS;
     }
 }

@@ -1,32 +1,6 @@
 <template>
   <div class="article-detail">
-    <div class="author">
-      <!-- 作者信息 -->
-      <div class="author-info">
-        <div class="author-pic">
-          <el-avatar :size="100" :src="articleDetail.avatar ? articleDetail.avatar : defaultAvatar"></el-avatar>
-        </div>
-        <div class="author-name">{{ articleDetail.author }}</div>
-      </div>
-      <!-- 作者创作信息 -->
-      <div class="author-publish-info">
-        <!-- 作者发布文章数 -->
-        <el-row>
-          <el-col :span="8" :offset="4">创作</el-col>
-          <el-col :span="12">最近发布</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="3" :offset="4" style="text-align: center;">{{ authorPublishCount.publishCount }}</el-col>
-          <el-col :span="2" :offset="7" style="text-align: center;">{{ authorPublishCount.recentPublishCount }}</el-col>
-        </el-row>
-      </div>
-
-      <!-- 作者创作快捷按钮 -->
-      <div class="author-button" v-if="this.ownArticle">
-        <el-button type="primary" size="small" icon="el-icon-edit" @click="toEdit">编辑此文章</el-button>
-        <el-button type="danger" size="small" icon="el-icon-delete" @click="toDelete">删除此文章</el-button>
-      </div>
-    </div>
+    <!-- 当前查看文章 -->
     <div class="article">
       <!-- 文章标题 -->
       <div class="article-title">
@@ -45,16 +19,59 @@
         <div class="markdown-body" v-html="articleDetail.contentHtml"></div>
       </div>
     </div>
+    <!-- 作者 -->
+    <div class="author">
+      <!-- 作者信息 -->
+      <div class="author-top">
+        <!-- 作者信息 -->
+        <div class="author-info">
+          <div class="author-pic">
+            <el-avatar :size="60" :src="articleDetail.avatar ? articleDetail.avatar : defaultAvatar"></el-avatar>
+          </div>
+          <div class="author-name">{{ articleDetail.author }}</div>
+        </div>
+        <!-- 作者创作快捷按钮 -->
+        <div class="author-button" v-if="ownArticle">
+          <el-button type="text" size="mini" icon="el-icon-edit" @click="toEdit">编辑此文章</el-button>
+          <el-button type="text" class="button-danger" style="color: #F56C6C;" size="mini" icon="el-icon-delete"
+            @click="toDelete">删除此文章</el-button>
+        </div>
+        <!-- 作者创作信息 -->
+        <div class="author-publish-info" :style="{ marginTop: ownArticle ? '0px' : '20px' }">
+          <!-- 作者发布文章数 -->
+          <el-row>
+            <el-col :span="4" :offset="6">创作</el-col>
+            <el-col :span="2" :offset="0">{{ authorPublishCount.publishCount }}</el-col>
+            <el-col :span="4">发布</el-col>
+            <el-col :span="2">{{ authorPublishCount.publishCount }}</el-col>
+          </el-row>
+        </div>
+        <div class="author-top-part">—— 作者 ——</div>
+      </div>
+      <!-- 作者最新文章列表 -->
+      <div class="author-bottom">
+        <div class="author-bottom-part">—— 最新文章 ——</div>
+        <div class="author-new-article-list">
+          <div v-for="item in newArticleList" :key="item.id" class="new-article">
+            <router-link :to="`/article/${item.id}`">
+              <div class="new-article-title">{{ item.title }}</div>
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import 'github-markdown-css'
-import { articleBatchDeleteService, articleGetDetailService, articleAuthorInfoService } from '@/api/article'
+import { articleBatchDeleteService, articleGetDetailService, articleAuthorInfoService, articleGetNewArticleListService } from '@/api/article'
 import MDUtils from '@/utils/MDUtils'
 export default {
   data () {
     return {
+      // 最新文章集合
+      newArticleList: [],
       // 文章详情
       articleDetail: {
         // 作者
@@ -89,8 +106,18 @@ export default {
   },
   created () {
     this.getArticle()
+    this.getNewArticleList()
   },
   methods: {
+    // 获取最新文章集合
+    async getNewArticleList () {
+      try {
+        const res = await articleGetNewArticleListService()
+        this.newArticleList = res.data.data
+      } catch (error) {
+        this.$message.error('获取最新文章失败！')
+      }
+    },
     // 获取文章详情
     async getArticle () {
       const articleId = this.$route.params.articleId
@@ -179,51 +206,118 @@ export default {
 }
 
 .author {
-  border-radius: 6px;
-  padding: 16px;
-  width: 22%;
-  height: 220px;
-  background-color: #fff;
-}
+  position: fixed;
+  top: 100px;
+  right: 32px;
+  width: 19%;
 
-.author-info {
-  display: flex;
-  align-items: center;
-}
-
-.author-pic {
-  margin-left: 10px;
-
-  ::v-deep(.el-avatar--circle) {
-    border: 1px solid #efefef;
+  .author-top {
+    position: relative;
+    border-radius: 6px;
+    padding: 16px;
+    height: 160px;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px;
   }
-}
 
-.author-name {
-  margin-left: 16px;
-  font-size: 32px;
-  color: #222226;
-}
+  .author-info {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
 
-.author-button {
-  display: flex;
-  justify-content: space-around;
+    .author-pic {
+      margin-left: 32px;
+
+      ::v-deep(.el-avatar--circle) {
+        border: 1px solid #efefef;
+      }
+    }
+
+    .author-name {
+      margin-left: 24px;
+      font-size: 24px;
+      color: #222226;
+    }
+  }
+
+  .author-button {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+
+    .button-danger {
+      &:hover {
+        color: #f78989 !important;
+      }
+    }
+  }
+
+  .author-publish-info {
+    color: #606266;
+    font-size: 14px;
+  }
+
+  .author-top-part {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: #606266;
+  }
+
+  .author-bottom {
+    position: relative;
+    margin-top: 16px;
+    border-radius: 6px;
+    padding: 16px;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px;
+  }
+
+  .author-bottom-part {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 100%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: #606266;
+  }
+
+  .author-new-article-list {
+    margin-top: 12px;
+    padding-left: 12px;
+
+    .new-article {
+      margin-bottom: 16px;
+    }
+
+    .new-article-title {
+      line-height: 16px;
+      color: #606266;
+      word-break: break-all;
+      transition: all 0.3s;
+
+      &:hover {
+        color: #101932;
+
+      }
+    }
+  }
 }
 
 .article {
   border-radius: 6px;
   padding: 16px;
-  width: 77%;
+  width: 80%;
   background-color: #fff;
-}
-
-.author-publish-info {
-  margin-top: 10px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px;
 }
 
 .publish-date {
-  margin-top: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #888888;
 }
 </style>
