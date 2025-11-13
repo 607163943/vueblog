@@ -115,22 +115,38 @@ export default {
     async addArticle () {
       this.ArticleForm.userId = this.$store.state.user.userInfo.id
 
+      const loading = this.$loading({
+        lock: true,
+        text: '保存中......',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       try {
         await articleCreateService(this.ArticleForm)
         this.$message.success('操作成功！')
         this.editAlert()
       } catch (error) {
         this.$message.error('操作失败！' + error.response.data.msg)
+      } finally {
+        loading.close()
       }
     },
     // 修改文章
     async updateArticle () {
+      const loading = this.$loading({
+        lock: true,
+        text: '保存中......',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       try {
         await articleUpdateService(this.ArticleForm)
         this.$message.success('操作成功！')
         this.editAlert()
       } catch (error) {
         this.$message.error('操作失败！' + error.response.data.msg)
+      } finally {
+        loading.close()
       }
     },
     // 弹出查看提示框

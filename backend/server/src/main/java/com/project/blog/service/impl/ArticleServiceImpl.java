@@ -150,6 +150,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .update();
 
         Article article = BeanUtil.copyProperties(articleDTO, Article.class);
+
         articleService.updateById(article);
     }
 

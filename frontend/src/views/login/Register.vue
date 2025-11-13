@@ -20,8 +20,8 @@
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="密码" prop="password">
-                <el-input v-model="registerForm.password" placeholder="请输入密码" show-password></el-input>
+              <el-form-item label="密码" prop="orgPassword">
+                <el-input v-model="registerForm.orgPassword" placeholder="请输入密码" show-password></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -34,7 +34,8 @@
           </el-row>
           <el-row style="margin-top: 20px;">
             <el-col :span="24">
-              <el-button style="width: 100%;padding: 16px 20px;" type="success" @click="register('registerFormRef')">注册</el-button>
+              <el-button style="width: 100%;padding: 16px 20px;" type="success" @click="register('registerFormRef')"
+                :loading="loading">注册</el-button>
             </el-col>
           </el-row>
           <el-row style="margin-top: 10px;">
@@ -52,6 +53,7 @@
 <script>
 import Footer from '@/views/layout/Footer'
 import { userRegisterService } from '@/api/user'
+import { encryptPassword } from '@/utils/security-utils'
 export default {
   name: 'UserRegister',
   components: { Footer },
@@ -64,10 +66,12 @@ export default {
         // 邮箱
         email: '',
         // 密码
-        password: '',
+        orgPassword: '',
         // 确认密码
         confirmPassword: ''
       },
+      // 加载动画标志
+      loading: false,
       // 表单校验规则
       rules: {
         username: [
@@ -80,7 +84,7 @@ export default {
           }
         ],
         email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
-        password: [
+        orgPassword: [
           { required: true, message: '密码不能为空', trigger: 'blur' },
           {
             min: 6,
@@ -101,14 +105,20 @@ export default {
     async register (formName) {
       await this.$refs[formName].validate()
 
-      await userRegisterService(this.registerForm)
+      this.loading = true
+      try {
+        this.registerForm.password = encryptPassword(this.registerForm.orgPassword)
+        await userRegisterService(this.registerForm)
+      } finally {
+        this.loading = false
+      }
 
       this.$message.success('注册成功！')
       this.$router.push({ name: 'Login' })
     },
     // 确认密码校验
     checkPassword (rule, value, callback) {
-      if (value !== this.registerForm.password) {
+      if (value !== this.registerForm.orgPassword) {
         callback(new Error('两次密码不一致，请重新输入！'))
       } else {
         callback()

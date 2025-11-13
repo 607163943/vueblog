@@ -2,12 +2,12 @@ package com.project.blog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.project.blog.common.constant.UserExceptionMessage;
 import com.project.blog.common.constant.UserStatus;
 import com.project.blog.common.exception.UserException;
 import com.project.blog.common.utils.JWTUtils;
+import com.project.blog.common.utils.SecurityUtils;
 import com.project.blog.mapper.UserMapper;
 import com.project.blog.pojo.dto.LoginDTO;
 import com.project.blog.pojo.dto.RegisterDTO;
@@ -31,15 +31,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      */
     @Override
     public LoginVO login(LoginDTO loginDto) {
+        // 用户名匹配
         User user = this.lambdaQuery()
                 .eq(StrUtil.isNotBlank(loginDto.getUsername()), User::getUsername, loginDto.getUsername())
                 .one();
-
         if(user==null) {
             throw new UserException(UserExceptionMessage.USER_NOT_EXIST);
         }
 
-        if (!user.getPassword().equals(SecureUtil.md5(loginDto.getPassword()))){
+        // 密码匹配
+        if (!SecurityUtils.matches(loginDto.getPassword(), user.getSalt(), user.getPassword())){
             throw new UserException(UserExceptionMessage.PASSWORD_ERROR);
         }
         String token = jwtUtils.generateToken(user.getId());
@@ -67,7 +68,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         User registerUser = BeanUtil.copyProperties(registerDTO, User.class);
         registerUser.setStatus(UserStatus.ACTIVE);
-        registerUser.setPassword(SecureUtil.md5(registerDTO.getPassword()));
+
+        registerUser.setSalt(SecurityUtils.generateSalt());
+        registerUser.setPassword(SecurityUtils.encryptPassword(registerDTO.getPassword(), registerUser.getSalt()));
 
         boolean saved = this.save(registerUser);
         if (!saved) {

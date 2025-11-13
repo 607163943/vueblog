@@ -5,7 +5,7 @@ import router from '@/router'
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
-  timeout: 1000
+  timeout: 10000
 })
 
 // 添加请求拦截器

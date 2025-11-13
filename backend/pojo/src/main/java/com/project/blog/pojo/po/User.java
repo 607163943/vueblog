@@ -24,6 +24,9 @@ public class User implements Serializable {
     // 密码
     private String password;
 
+    // 密码盐
+    private String salt;
+
     // 状态
     private Integer status;
 

@@ -7,5 +7,13 @@ mysql:
 
 # redis配置
 redis:
-  host: localhost:6371
+  host: localhost:16379
   port: 6371
+
+# minio配置
+minio:
+  access-key: minioadmin
+  secret-key: minioadmin
+  end-point: http://127.0.0.1:19000
+  bucket-name: vueblog-img
+  domain: http://127.0.0.1:19000/vueblog-img/

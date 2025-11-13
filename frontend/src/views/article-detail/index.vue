@@ -48,7 +48,7 @@
         </div>
         <div class="author-top-part">—— 作者 ——</div>
       </div>
-      <!-- 作者最新文章列表 -->
+      <!-- 最新文章列表 -->
       <div class="author-bottom">
         <div class="author-bottom-part">—— 最新文章 ——</div>
         <div class="author-new-article-list">
@@ -105,10 +105,49 @@ export default {
     }
   },
   created () {
-    this.getArticle()
-    this.getNewArticleList()
+    this.getArticleData()
+  },
+  watch: {
+    // 监听文章id变化
+    '$route.params.articleId' () {
+      this.getArticleData()
+    }
   },
   methods: {
+    // 获取文章数据
+    async getArticleData () {
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      this.clearArticleData()
+      await Promise.all([
+        this.getArticle(),
+        this.getNewArticleList()
+      ])
+      loading.close()
+    },
+    // 清理文章旧数据
+    clearArticleData () {
+      this.newArticleList = []
+      this.articleDetail = {
+        author: '',
+        userId: '',
+        avatar: '',
+        id: '',
+        title: '',
+        content: '',
+        contentHtml: '',
+        updateTime: ''
+      }
+      this.authorPublishCount = {
+        publishCount: 0,
+        recentPublishCount: 0
+      }
+      this.ownArticle = false
+    },
     // 获取最新文章集合
     async getNewArticleList () {
       try {

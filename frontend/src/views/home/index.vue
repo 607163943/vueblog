@@ -12,12 +12,8 @@
                 <div class="meta">
                   <div class="user">
                     <div class="pic">
-                      <el-avatar
-                        :size="30"
-                        :src="
-                          article.authorAvatar ? article.authorAvatar : avatar
-                        "
-                      ></el-avatar>
+                      <el-avatar :size="30" :src="article.authorAvatar ? article.authorAvatar : avatar
+                        "></el-avatar>
                     </div>
                     <div class="username">
                       {{ article.author ? article.author : "未知用户" }}
@@ -38,15 +34,8 @@
       </div>
     </div>
     <!--分页-->
-    <el-pagination
-      class="pager"
-      background
-      layout="prev, pager, next"
-      :current-page="pageParams.page"
-      :page-size="pageParams.pageSize"
-      :total="total"
-      @current-change="pageChange"
-    >
+    <el-pagination class="pager" background layout="prev, pager, next" :current-page="pageParams.page"
+      :page-size="pageParams.pageSize" :total="total" @current-change="pageChange">
     </el-pagination>
   </div>
 </template>
@@ -67,8 +56,15 @@ export default {
         'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
     }
   },
-  created () {
-    this.pageQuery()
+  async created () {
+    const loading = this.$loading({
+      lock: true,
+      text: 'Loading',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
+    await this.pageQuery()
+    loading.close()
   },
   methods: {
     // 分页查询文章
@@ -111,6 +107,7 @@ export default {
     ::v-deep(.el-card.is-always-shadow) {
       box-shadow: 0 2px 12px 0 #d1d4f5;
     }
+
     .left .pic {
       // 放大图像
       transform: scale(1.3);

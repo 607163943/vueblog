@@ -4,10 +4,7 @@
     <div class="search">
       <el-form :inline="true" :model="searchForm" ref="searchFormRef">
         <el-form-item label="文章标题" prop="title">
-          <el-input
-            v-model="searchForm.title"
-            placeholder="文章标题"
-          ></el-input>
+          <el-input v-model="searchForm.title" placeholder="文章标题"></el-input>
         </el-form-item>
         <el-form-item label="文章状态" prop="status">
           <el-select v-model="searchForm.status" placeholder="文章状态">
@@ -23,14 +20,14 @@
     </div>
     <!-- 按钮组 -->
     <div class="button-group">
-      <el-button type="primary" size="small" icon="el-icon-plus" @click="$router.push('/article/add')" plain
-        >新增</el-button>
-      <el-button type="danger" @click="deleteArticle" :disabled="selectItems.length<=0" size="small" icon="el-icon-delete" plain
-        >删除</el-button>
+      <el-button type="primary" size="small" icon="el-icon-plus" @click="$router.push('/article/add')"
+        plain>新增</el-button>
+      <el-button type="danger" @click="deleteArticle" :disabled="selectItems.length <= 0" size="small"
+        icon="el-icon-delete" plain>删除</el-button>
     </div>
     <!-- 数据表格 -->
     <div class="table">
-      <el-table @selection-change="selectChange" :data="tableData" style="width: 100%" border>
+      <el-table v-loading="loading" @selection-change="selectChange" :data="tableData" style="width: 100%" border>
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column label="标题" width="250" align="center">
           <template slot-scope="scope">
@@ -55,37 +52,23 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" icon="el-icon-view" @click="handleLook(scope.row)"
-              >查看</el-button>
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-edit"
-              @click="handleEdit(scope.row)"
-              >编辑</el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              icon="el-icon-delete"
-              @click.prevent="handleDelete(scope.row)"
-              >删除</el-button>
+            <el-button size="mini" icon="el-icon-view" @click="handleLook(scope.row)">查看</el-button>
+            <el-button size="mini" type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" icon="el-icon-delete"
+              @click.prevent="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
+        <template #empty>
+          <el-empty description="你还没有编写过文章，赶快去创作一篇吧！"></el-empty>
+        </template>
       </el-table>
     </div>
 
     <!-- 分页 -->
     <div class="page">
-      <el-pagination
-        @size-change="pageSizeChange"
-        @current-change="pageChange"
-        :current-page="pageParams.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageParams.pageSize"
-        layout="total, prev, pager, next, sizes, jumper"
-        :total="total"
-        background
-      >
+      <el-pagination @size-change="pageSizeChange" @current-change="pageChange" :current-page="pageParams.page"
+        :page-sizes="[10, 20, 30, 40]" :page-size="pageParams.pageSize" layout="total, prev, pager, next, sizes, jumper"
+        :total="total" background>
       </el-pagination>
     </div>
   </div>
@@ -103,6 +86,8 @@ export default {
         // 文章状态
         status: ''
       },
+      // 加载状态
+      loading: false,
       // 分页参数
       pageParams: {
         page: 1,
@@ -127,8 +112,10 @@ export default {
       total: 0
     }
   },
-  created () {
-    this.pageQuery()
+  async created () {
+    this.loading = true
+    await this.pageQuery()
+    this.loading = false
   },
   methods: {
     // 重置搜索表单
@@ -207,7 +194,7 @@ export default {
         })
 
         this.pageQuery()
-      } catch (error) {}
+      } catch (error) { }
     }
   }
 }

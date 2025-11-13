@@ -19,8 +19,8 @@
             </el-row>
             <el-row>
               <el-col :span="24">
-                <el-form-item label="密码" prop="password">
-                  <el-input type="password" v-model="loginForm.password"
+                <el-form-item label="密码" prop="orgPassword">
+                  <el-input type="password" v-model="loginForm.orgPassword"
                     @keyup.enter.native="submitForm('loginFormRef')" prefix-icon="el-icon-lock" show-password
                     placeholder="输入密码"></el-input>
                 </el-form-item>
@@ -41,7 +41,8 @@
             <el-row style="margin-bottom: 20px;">
               <el-col :span="24">
                 <el-form-item>
-                  <el-button style="width: 100%;" type="primary" @click="submitForm('loginFormRef')">登录</el-button>
+                  <el-button style="width: 100%;" type="primary" @click="submitForm('loginFormRef')"
+                    :loading="loading">登录</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -65,6 +66,7 @@
 <script>
 import Footer from '@/views/layout/Footer'
 import { userLoginService } from '@/api/user'
+import { encryptPassword } from '@/utils/security-utils'
 export default {
   name: 'UserLogin',
   components: { Footer },
@@ -77,8 +79,10 @@ export default {
         // 用户名
         username: '',
         // 密码
-        password: ''
+        orgPassword: ''
       },
+      // 加载动画标志
+      loading: false,
       // 表单校验规则
       rules: {
         username: [
@@ -90,7 +94,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        password: [
+        orgPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           {
             min: 3,
@@ -108,21 +112,26 @@ export default {
     async submitForm (formName) {
       await this.$refs[formName].validate()
 
-      const res = await userLoginService(this.loginForm)
+      this.loading = true
+      try {
+        this.loginForm.password = encryptPassword(this.loginForm.orgPassword)
+        const res = await userLoginService(this.loginForm)
+        const token = res.data.data.token
+        const userInfo = res.data.data.userInfo
 
-      const token = res.data.data.token
-      const userInfo = res.data.data.userInfo
+        // 提交到Vuex仓库
+        this.$store.commit('user/setToken', token)
+        this.$store.commit('user/setUserInfo', userInfo)
 
-      // 提交到Vuex仓库
-      this.$store.commit('user/setToken', token)
-      this.$store.commit('user/setUserInfo', userInfo)
-
-      // 跳转到登录前的页面
-      if (this.$route.query.redirect) {
-        this.$router.push({ path: this.$route.query.redirect })
-      } else {
-        // 跳转到首页
-        this.$router.push({ name: 'Home' })
+        // 跳转到登录前的页面
+        if (this.$route.query.redirect) {
+          this.$router.push({ path: this.$route.query.redirect })
+        } else {
+          // 跳转到首页
+          this.$router.push({ name: 'Home' })
+        }
+      } finally {
+        this.loading = false
       }
     }
   }
