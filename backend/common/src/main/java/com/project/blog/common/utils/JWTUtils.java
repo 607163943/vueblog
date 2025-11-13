@@ -19,9 +19,10 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "jwt")
 public class JWTUtils {
 
+    // 密钥
     private String secret;
-    private long expire;
-    private String header;
+    // 过期时间
+    private Long expire;
 
     /**
      * 生成jwt token
@@ -42,8 +43,8 @@ public class JWTUtils {
 
     /**
      * 获取token中的用户id
-     * @param token
-     * @return
+     * @param token JWT令牌
+     * @return 用户id
      */
     public String getUserId(String token) {
         try{
@@ -57,7 +58,7 @@ public class JWTUtils {
 
     /**
      * 验证token
-     * @param token
+     * @param token JWT令牌
      */
     public void check(String token) {
         try {

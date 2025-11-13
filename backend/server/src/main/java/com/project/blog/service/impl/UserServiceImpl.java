@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,29 +31,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     /**
      * 用户登录
      *
-     * @param loginDto
+     * @param loginDTO
      * @return
      */
     @Override
-    public LoginVO login(LoginDTO loginDto) {
+    public LoginVO login(LoginDTO loginDTO) {
         // 用户名匹配
         User user = this.lambdaQuery()
-                .eq(StrUtil.isNotBlank(loginDto.getUsername()), User::getUsername, loginDto.getUsername())
+                .eq(StrUtil.isNotBlank(loginDTO.getUsername()), User::getUsername, loginDTO.getUsername())
                 .one();
         if (user == null) {
-            log.warn("用户不存在,username={}", loginDto.getUsername());
+            log.warn("用户不存在,username={}", loginDTO.getUsername());
             throw new UserException(UserExceptionMessage.USER_NOT_EXIST);
         }
 
         // 密码匹配
-        if (!SecurityUtils.matches(loginDto.getPassword(), user.getSalt(), user.getPassword())) {
-            log.warn("登录账号时密码错误,username={}", loginDto.getUsername());
+        if (!SecurityUtils.matches(loginDTO.getPassword(), user.getSalt(), user.getPassword())) {
+            log.warn("登录账号时密码错误,username={}", loginDTO.getUsername());
             throw new UserException(UserExceptionMessage.PASSWORD_ERROR);
         }
         String token = jwtUtils.generateToken(user.getId());
 
+        // 更新登录时间
+        this.lambdaUpdate()
+                .eq(User::getId, user.getId())
+                .set(User::getLastLoginTime, LocalDateTime.now())
+                .update();
+
         UserInfo userInfo = BeanUtil.copyProperties(user, UserInfo.class);
-        log.info("用户登陆成功,username={}", loginDto.getUsername());
+        log.info("用户登陆成功,username={}", loginDTO.getUsername());
 
         return LoginVO.builder()
                 .token(token)

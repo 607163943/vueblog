@@ -21,8 +21,8 @@ public class GlobalExceptionHandler {
     /**
      * 处理文章模块业务异常
      *
-     * @param e
-     * @return
+     * @param e 文章业务异常对象
+     * @return 错误响应
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ArticleException.class)
@@ -34,8 +34,8 @@ public class GlobalExceptionHandler {
     /**
      * 处理用户模块业务异常
      *
-     * @param e
-     * @return
+     * @param e 用户业务异常对象
+     * @return 错误响应
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserException.class)
@@ -44,7 +44,11 @@ public class GlobalExceptionHandler {
         return Result.error(ResultCodeStatus.PARAM_ERROR, e.getMessage());
     }
 
-    // 捕捉shiro的异常
+    /**
+     * shiro的异常
+     * @param e shiro异常对象
+     * @return 错误响应
+     */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ShiroException.class)
     public Result<Object> handle401(ShiroException e) {
@@ -53,7 +57,9 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * @Validated 校验错误异常处理
+     * 参数校验异常
+     * @param e 参数校验异常对象
+     * @return 错误响应
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
@@ -64,10 +70,15 @@ public class GlobalExceptionHandler {
         return Result.error(ResultCodeStatus.PARAM_ERROR, objectError.getDefaultMessage());
     }
 
+    /**
+     * 运行时异常
+     * @param e 运行时异常对象
+     * @return 错误响应
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = RuntimeException.class)
     public Result<Object> handler(RuntimeException e) {
         log.error("运行时异常:-------------->", e);
-        return Result.error(ResultCodeStatus.SERVER_ERROR, e.getMessage());
+        return Result.error(ResultCodeStatus.SERVER_ERROR, "服务器异常！");
     }
 }

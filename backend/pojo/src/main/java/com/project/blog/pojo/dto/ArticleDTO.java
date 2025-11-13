@@ -29,6 +29,7 @@ public class ArticleDTO {
     private String title;
 
     @ApiModelProperty("文章描述")
+    @NotBlank(message = "文章描述不能为空")
     private String description;
 
     @ApiModelProperty("文章内容")

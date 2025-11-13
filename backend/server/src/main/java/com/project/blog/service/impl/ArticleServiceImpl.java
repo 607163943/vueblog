@@ -11,7 +11,6 @@ import com.project.blog.common.constant.ArticleStatus;
 import com.project.blog.common.exception.ArticleException;
 import com.project.blog.common.result.PageResult;
 import com.project.blog.common.utils.MdObjectKeyPickerUtils;
-import com.project.blog.common.utils.UserContext;
 import com.project.blog.mapper.ArticleMapper;
 import com.project.blog.pojo.dto.ArticleDTO;
 import com.project.blog.pojo.dto.BasePageDTO;
@@ -22,6 +21,7 @@ import com.project.blog.pojo.vo.*;
 import com.project.blog.service.IArticleService;
 import com.project.blog.service.IImageAssetService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +45,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     /**
      * 分页查询文章
      *
-     * @param basePageDTO
-     * @return
+     * @param basePageDTO 基础分页DTO
+     * @return 首页分页查询文章结果
      */
     @Override
     public PageResult<List<ArticleHomePageVO>> pageQuery(BasePageDTO basePageDTO) {
@@ -62,14 +62,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     /**
      * 分页查询用户文章
      *
-     * @param userArticlePageDTO
-     * @return
+     * @param userArticlePageDTO 用户文章分页DTO
+     * @return 用户文章分页查询结果
      */
     @Override
     public PageResult<List<ArticleTablePageVO>> userArticlePageQuery(UserArticlePageDTO userArticlePageDTO) {
         IPage<Article> page = new Page<>(userArticlePageDTO.getPage(), userArticlePageDTO.getPageSize());
 
-        Long userId = UserContext.getUserId();
+        Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
 
         // 分页查询用户文章
         page = this.lambdaQuery()
@@ -90,8 +90,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     /**
      * 查询文章详情
      *
-     * @param id
-     * @return
+     * @param id 文章id
+     * @return 文章详情VO
      */
     @Override
     public ArticleDetailVO detail(Long id) {
@@ -101,8 +101,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     /**
      * 统计作者创作信息
      *
-     * @param authorId
-     * @return
+     * @param authorId 作者id
+     * @return 作者创作信息VO
      */
     @Override
     public AuthorArticlePublishCountVO countAuthorArticlePublishCount(Long authorId) {
@@ -128,7 +128,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     /**
      * 查询最新文章
      *
-     * @return
+     * @return 最新文章VO集合
      */
     @Override
     public List<ArticleNewVO> getNewArticle() {
@@ -140,7 +140,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     /**
      * 修改文章
      *
-     * @param articleDTO
+     * @param articleDTO 文章DTO
      */
     @Transactional
     @Override
@@ -164,14 +164,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     /**
      * 添加文章
      *
-     * @param articleDTO
+     * @param articleDTO 文章DTO
      */
     @Transactional
     @Override
     public void add(ArticleDTO articleDTO) {
         // 判断文章创作者和登录用户是否为同一人
-        if (!articleDTO.getUserId().equals(UserContext.getUserId())) {
-            log.warn("用户和文章作者不匹配,articleDTO={},userId={}", articleDTO, UserContext.getUserId());
+        if (!articleDTO.getUserId().equals(SecurityUtils.getSubject().getPrincipal())) {
+            log.warn("用户和文章作者不匹配,articleDTO={},userId={}", articleDTO, SecurityUtils.getSubject().getPrincipal());
             throw new ArticleException(ArticleExceptionMessage.USER_NOT_SAME);
         }
         Article article = BeanUtil.copyProperties(articleDTO, Article.class);

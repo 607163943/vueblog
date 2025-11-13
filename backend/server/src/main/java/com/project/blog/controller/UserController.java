@@ -27,8 +27,8 @@ public class UserController {
 
     /**
      * 用户注册
-     * @param registerDTO
-     * @return
+     * @param registerDTO 注册信息
+     * @return void响应
      */
     @ApiOperation("用户注册")
     @PostMapping("/user/register")
@@ -40,29 +40,29 @@ public class UserController {
 
     /**
      * 用户登录
-     * @param loginDto
-     * @return
+     * @param loginDTO 登录信息
+     * @return 用户信息
      */
     @ApiOperation("用户登录")
     @PostMapping("/user/login")
-    public Result<LoginVO> login(@Validated @RequestBody LoginDTO loginDto){
-        LoginVO loginVO=userService.login(loginDto);
+    public Result<LoginVO> login(@Validated @RequestBody LoginDTO loginDTO){
+        LoginVO loginVO=userService.login(loginDTO);
 
         return Result.success(loginVO);
     }
 
     /**
      * 用户退出
-     * @return
+     * @return void响应
      */
     @RequiresAuthentication
     @ApiOperation("用户退出")
     @GetMapping("/logout")
     public Result<Object> logout() {
+        // 清除上下文用户数据
         SecurityUtils.getSubject().logout();
         log.info("用户退出成功");
         return Result.success(null, "退出成功");
-
     }
 
 }

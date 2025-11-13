@@ -1,24 +1,12 @@
 package com.project.blog.pojo.po;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@TableName("article")
-public class Article implements Serializable {
-    // id
-    private Long id;
-
+public class Article extends BasePO {
     // 作者id
     private Long userId;
 
@@ -33,14 +21,6 @@ public class Article implements Serializable {
 
     // 内容
     private String content;
-
-    // 创建时间
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
-
-    // 修改时间
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
 
     @TableLogic
     // 逻辑删除标志

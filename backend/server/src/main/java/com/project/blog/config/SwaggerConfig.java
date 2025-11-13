@@ -12,11 +12,12 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SwaggerConfig {
     /**
      * 配置swagger
-     * @return
+     * @return Docket
      */
     @Bean
     public Docket docket(){
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("HCODE小站项目测试文档")
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.project.blog.controller"))
@@ -25,7 +26,7 @@ public class SwaggerConfig {
 
     /**
      * 创建api文档
-     * @return
+     * @return ApiInfo
      */
     public ApiInfo apiInfo() {
         return new ApiInfoBuilder()

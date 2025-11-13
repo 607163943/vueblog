@@ -13,16 +13,16 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     /**
      * 分页查询文章
-     * @param page
-     * @param basePageDTO
-     * @return
+     * @param page 分页参数
+     * @param basePageDTO 基础分页DTO
+     * @return 首页分页查询文章结果
      */
     IPage<ArticleHomePageVO> pageQuery(IPage<ArticleHomePageVO> page, @Param(Constants.WRAPPER) BasePageDTO basePageDTO);
 
     /**
      * 查询文章详情
-     * @param id
-     * @return
+     * @param id 文章id
+     * @return 文章详情VO
      */
     ArticleDetailVO detail(Long id);
 }

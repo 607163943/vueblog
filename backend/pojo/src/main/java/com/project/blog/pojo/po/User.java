@@ -1,17 +1,19 @@
 package com.project.blog.pojo.po;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Accessors(chain = true)
-public class User implements Serializable {
-    // id
-    private Long id;
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class User extends BasePO {
     // 用户名
     private String username;
 
@@ -30,10 +32,6 @@ public class User implements Serializable {
     // 状态
     private Integer status;
 
-    // 创建时间
-    private Date created;
-
     // 最后登录时间
-    private Date lastLogin;
-
+    private LocalDateTime lastLoginTime;
 }

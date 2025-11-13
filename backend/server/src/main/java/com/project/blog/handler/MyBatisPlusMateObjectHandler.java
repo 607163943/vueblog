@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class MyBatisPlusMateObjectHandler implements MetaObjectHandler {
     /**
      * 新增数据填充
-     * @param metaObject
+     * @param metaObject 拦截的实体数据
      */
     @Override
     public void insertFill(MetaObject metaObject) {
@@ -23,7 +23,7 @@ public class MyBatisPlusMateObjectHandler implements MetaObjectHandler {
 
     /**
      * 修改数据填充
-     * @param metaObject
+     * @param metaObject 拦截的实体数据
      */
     @Override
     public void updateFill(MetaObject metaObject) {

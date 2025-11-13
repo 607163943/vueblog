@@ -5,16 +5,15 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.project.blog.common.constant.ResultCodeStatus;
 import com.project.blog.common.result.Result;
 import com.project.blog.common.utils.JWTUtils;
-import com.project.blog.common.utils.UserContext;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends AuthenticatingFilter {
 
-    @Autowired
+    @Resource
     JWTUtils jwtUtils;
     @Override
     protected AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
@@ -82,16 +81,5 @@ public class JwtFilter extends AuthenticatingFilter {
             return false;
         }
         return super.preHandle(request, response);
-    }
-
-    /**
-     *
-     * @param request
-     * @param response
-     * @throws Exception
-     */
-    @Override
-    protected void postHandle(ServletRequest request, ServletResponse response) {
-        UserContext.setUserId(null);
     }
 }

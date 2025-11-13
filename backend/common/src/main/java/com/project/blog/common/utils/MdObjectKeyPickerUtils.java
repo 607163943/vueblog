@@ -13,6 +13,11 @@ public class MdObjectKeyPickerUtils {
         "/vueblog-img/([^?#]+)", Pattern.CASE_INSENSITIVE
     );
 
+    /**
+     * 获取markdown文本中所有图片的 object_key
+     * @param markdown markdown文本
+     * @return object_key集合
+     */
     public static Set<String> extractKeys(String markdown) {
         Set<String> keys = new LinkedHashSet<>();
         if (markdown == null || markdown.isEmpty()) return keys;

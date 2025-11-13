@@ -63,8 +63,11 @@ export default {
       spinner: 'el-icon-loading',
       background: 'rgba(0, 0, 0, 0.7)'
     })
-    await this.pageQuery()
-    loading.close()
+    try {
+      await this.pageQuery()
+    } finally {
+      loading.close()
+    }
   },
   methods: {
     // 分页查询文章

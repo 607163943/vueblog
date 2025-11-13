@@ -15,7 +15,7 @@ public class SecurityUtils {
     /**
      * 生成随机盐
      *
-     * @return
+     * @return 16进制的随机盐
      */
     public static String generateSalt() {
         return new SecureRandomNumberGenerator().nextBytes().toHex();
@@ -23,9 +23,9 @@ public class SecurityUtils {
 
     /**
      * 密码加密
-     * @param frontendHashedPassword
-     * @param salt
-     * @return
+     * @param frontendHashedPassword 前端传递的密码
+     * @param salt 盐值
+     * @return 加密后的密码
      */
     public static String encryptPassword(String frontendHashedPassword, String salt) {
         return new SimpleHash(
@@ -38,10 +38,10 @@ public class SecurityUtils {
 
     /**
      * 密码匹配
-     * @param frontendHashedPassword
-     * @param salt
-     * @param storedPassword
-     * @return
+     * @param frontendHashedPassword 前端传递的密码
+     * @param salt 盐值
+     * @param storedPassword 数据库存储密码
+     * @return 匹配结果
      */
     public static boolean matches(String frontendHashedPassword, String salt, String storedPassword) {
         String newPassword = encryptPassword(frontendHashedPassword, salt);

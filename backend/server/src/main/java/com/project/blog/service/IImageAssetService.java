@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IImageAssetService extends IService<ImageAsset> {
     /**
      * 上传图片
-     * @param file
+     * @param file 上传的图片
      */
     String uploadImage(MultipartFile file,String tempId,Long userId);
 }

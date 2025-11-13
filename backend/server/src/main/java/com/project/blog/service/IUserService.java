@@ -10,14 +10,14 @@ public interface IUserService extends IService<User> {
 
     /**
      * 用户登录
-     * @param loginDto
-     * @return
+     * @param loginDTO 登录信息
+     * @return 用户信息
      */
-    LoginVO login(LoginDTO loginDto);
+    LoginVO login(LoginDTO loginDTO);
 
     /**
      * 用户注册
-     * @param registerDTO
+     * @param registerDTO 注册信息
      */
     void register(RegisterDTO registerDTO);
 }

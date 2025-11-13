@@ -26,7 +26,7 @@ public class ImageAssetServiceImpl extends ServiceImpl<ImageAssetMapper, ImageAs
     /**
      * 上传图片
      *
-     * @param file
+     * @param file 上传的图片
      */
     @Override
     public String uploadImage(MultipartFile file, String tempId, Long userId) {
@@ -62,8 +62,8 @@ public class ImageAssetServiceImpl extends ServiceImpl<ImageAssetMapper, ImageAs
     /**
      * 上传到MinIO
      *
-     * @param file
-     * @return
+     * @param file 上传的图片
+     * @return 上传后的文件信息
      */
     private FileInfo uploadToMinIO(MultipartFile file, String objectName) {
         String originalFilename = file.getOriginalFilename();

@@ -36,8 +36,8 @@ public class ArticleController {
     /**
      * 分页查询文章
      *
-     * @param basePageDTO
-     * @return
+     * @param basePageDTO 基础分页DTO
+     * @return 首页分页查询文章结果
      */
     @ApiOperation("分页查询文章")
     @GetMapping
@@ -52,7 +52,7 @@ public class ArticleController {
     /**
      * 查询最新文章
      *
-     * @return
+     * @return 最新5篇文章集合
      */
     @ApiOperation("查询最新文章")
     @GetMapping("/new")
@@ -64,8 +64,8 @@ public class ArticleController {
     /**
      * 查询文章
      *
-     * @param id
-     * @return
+     * @param id 文章id
+     * @return 文章VO
      */
     @ApiOperation("查询文章")
     @GetMapping("/{id}")
@@ -81,8 +81,8 @@ public class ArticleController {
     /**
      * 查询文章详情
      *
-     * @param id
-     * @return
+     * @param id 文章id
+     * @return 文章详情VO
      */
     @ApiOperation("查询文章详情")
     @GetMapping("/detail/{id}")
@@ -95,8 +95,8 @@ public class ArticleController {
     /**
      * 修改文章
      *
-     * @param articleDTO
-     * @return
+     * @param articleDTO 文章DTO
+     * @return  void响应
      */
     @ApiOperation("修改文章")
     @RequiresAuthentication
@@ -109,8 +109,8 @@ public class ArticleController {
     /**
      * 添加文章
      *
-     * @param articleDTO
-     * @return
+     * @param articleDTO 文章DTO
+     * @return void响应
      */
     @ApiOperation("添加文章")
     @RequiresAuthentication
@@ -123,8 +123,8 @@ public class ArticleController {
     /**
      * 批量删除文章
      *
-     * @param ids
-     * @return
+     * @param ids 文章id集合
+     * @return void响应
      */
     @ApiOperation("批量删除文章")
     @RequiresAuthentication
@@ -147,9 +147,9 @@ public class ArticleController {
     /**
      * 分页查询用户文章
      *
-     * @param username
-     * @param userArticlePageDTO
-     * @return
+     * @param username 用户名
+     * @param userArticlePageDTO 用户文章分页DTO
+     * @return 用户文章分页查询结果
      */
     @ApiOperation("分页查询用户文章")
     @RequiresAuthentication
@@ -162,8 +162,8 @@ public class ArticleController {
     /**
      * 统计作者创作信息
      *
-     * @param authorId
-     * @return
+     * @param authorId 作者id
+     * @return 作者创作数据
      */
     @ApiOperation("统计作者创作信息")
     @GetMapping("/author/info/{authorId}")

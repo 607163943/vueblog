@@ -1,51 +1,59 @@
 package com.project.blog.shiro;
 
-import cn.hutool.core.bean.BeanUtil;
+import com.project.blog.common.constant.UserExceptionMessage;
+import com.project.blog.common.constant.UserStatus;
+import com.project.blog.common.exception.UserException;
+import com.project.blog.common.utils.JWTUtils;
+import com.project.blog.pojo.po.User;
+import com.project.blog.service.IUserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.project.blog.common.utils.UserContext;
-import com.project.blog.pojo.po.User;
-import com.project.blog.service.IUserService;
-import com.project.blog.common.utils.JWTUtils;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class AccountRealm extends AuthorizingRealm {
-    @Autowired
-    JWTUtils jwtUtils;
-    @Autowired
-    IUserService userService;
+    private final JWTUtils jwtUtils;
+
+    private final IUserService userService;
+
     @Override
     public boolean supports(AuthenticationToken token) {
         return token instanceof JwtToken;
     }
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        // 这里不做授权
         return null;
     }
+
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        // 获取令牌
         JwtToken jwt = (JwtToken) token;
-        log.info("jwt----------------->{}", jwt);
-        String userId = jwtUtils.getUserId((String) jwt.getPrincipal());
+
+        // 解析出用户
+        String userId = jwtUtils.getUserId(jwt.getPrincipal().toString());
         User user = userService.getById(Long.parseLong(userId));
-        if(user == null) {
-            throw new UnknownAccountException("账户不存在！");
+        if (user == null) {
+            log.warn("用户不存在,userId={}", userId);
+            throw new UserException(UserExceptionMessage.USER_NOT_EXIST);
         }
-        if(user.getStatus() == -1) {
-            throw new LockedAccountException("账户已被锁定！");
+        // 检测账号状态
+        if (user.getStatus().equals(UserStatus.INACTIVE)) {
+            log.warn("用户被禁用,userId={}", userId);
+            throw new UserException(UserExceptionMessage.USER_LOCKED);
         }
-        AccountProfile profile = new AccountProfile();
-        BeanUtil.copyProperties(user, profile);
-        log.info("profile----------------->{}", profile);
 
-        UserContext.setUserId(Long.parseLong(userId));
-
-        return new SimpleAuthenticationInfo(profile, jwt.getCredentials(), getName());
+        return new SimpleAuthenticationInfo(Long.parseLong(userId), jwt.getCredentials(), getName());
     }
 }
