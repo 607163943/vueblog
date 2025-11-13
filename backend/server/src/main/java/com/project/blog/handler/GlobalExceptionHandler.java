@@ -20,33 +20,36 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     /**
      * 处理文章模块业务异常
+     *
      * @param e
      * @return
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ArticleException.class)
     public Result<Object> articleHandler(ArticleException e) {
-        log.debug("文章模块业务异常:-------------->{}",e.getMessage());
-        return Result.error(ResultCodeStatus.PARAM_ERROR,e.getMessage());
+        log.warn("文章模块业务异常:-------------->{}", e.getMessage(), e);
+        return Result.error(ResultCodeStatus.PARAM_ERROR, e.getMessage());
     }
 
     /**
      * 处理用户模块业务异常
+     *
      * @param e
      * @return
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserException.class)
     public Result<Object> userHandler(UserException e) {
-        log.debug("用户模块业务异常:-------------->{}",e.getMessage());
-        return Result.error(ResultCodeStatus.PARAM_ERROR,e.getMessage());
+        log.warn("用户模块业务异常:-------------->{}", e.getMessage(), e);
+        return Result.error(ResultCodeStatus.PARAM_ERROR, e.getMessage());
     }
 
     // 捕捉shiro的异常
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ShiroException.class)
     public Result<Object> handle401(ShiroException e) {
-        return Result.error( ResultCodeStatus.USER_NOT_LOGIN,e.getMessage());
+        log.warn("shiro异常:------>", e);
+        return Result.error(ResultCodeStatus.USER_NOT_LOGIN, e.getMessage());
     }
 
     /**
@@ -55,16 +58,16 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public Result<Object> handler(MethodArgumentNotValidException e) {
-        log.error("参数校验异常:-------------->",e);
+        log.error("参数校验异常:-------------->", e);
         BindingResult bindingResult = e.getBindingResult();
         ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
-        return Result.error(ResultCodeStatus.PARAM_ERROR,objectError.getDefaultMessage());
+        return Result.error(ResultCodeStatus.PARAM_ERROR, objectError.getDefaultMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = RuntimeException.class)
     public Result<Object> handler(RuntimeException e) {
-        log.error("运行时异常:-------------->",e);
-        return Result.error(ResultCodeStatus.SERVER_ERROR,e.getMessage());
+        log.error("运行时异常:-------------->", e);
+        return Result.error(ResultCodeStatus.SERVER_ERROR, e.getMessage());
     }
 }

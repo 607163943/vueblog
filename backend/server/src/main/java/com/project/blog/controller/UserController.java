@@ -9,6 +9,7 @@ import com.project.blog.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Api(tags = "用户接口")
 @RestController
 @RequiredArgsConstructor
@@ -58,6 +60,7 @@ public class UserController {
     @GetMapping("/logout")
     public Result<Object> logout() {
         SecurityUtils.getSubject().logout();
+        log.info("用户退出成功");
         return Result.success(null, "退出成功");
 
     }

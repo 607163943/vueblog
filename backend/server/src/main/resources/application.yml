@@ -49,6 +49,12 @@ dromara:
         domain: ${minio.domain} # 访问域名，注意“/”结尾，例如：http://minio.abc.com/abc/
         base-path: "" # 上传文件公共前缀基路径
 
+# 日志配置
+logging:
+  level:
+    root: warn # 框架日志级别
+    com.project.blog: info # 业务日志级别
+
 # JWT配置
 jwt:
   # 加密秘钥

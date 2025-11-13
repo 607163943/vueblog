@@ -21,6 +21,7 @@ import com.project.blog.pojo.po.ImageAsset;
 import com.project.blog.pojo.vo.*;
 import com.project.blog.service.IArticleService;
 import com.project.blog.service.IImageAssetService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +30,14 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements IArticleService {
 
     @Resource
     private IImageAssetService imageAssetService;
 
+    // 这里需要获取自己类的代理对象，否则会导致事务失效
     @Lazy
     @Resource
     private IArticleService articleService;
@@ -69,10 +72,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Long userId = UserContext.getUserId();
 
         // 分页查询用户文章
-        page=this.lambdaQuery()
-                .eq(userId!=null, Article::getUserId, userId)
+        page = this.lambdaQuery()
+                .eq(Article::getUserId, userId)
                 .like(StrUtil.isNotBlank(userArticlePageDTO.getTitle()), Article::getTitle, userArticlePageDTO.getTitle())
-                .eq(userArticlePageDTO.getStatus()!=null, Article::getStatus, userArticlePageDTO.getStatus())
+                .eq(userArticlePageDTO.getStatus() != null, Article::getStatus, userArticlePageDTO.getStatus())
                 .orderByDesc(Article::getUpdateTime)
                 .page(page);
 
@@ -97,6 +100,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     /**
      * 统计作者创作信息
+     *
      * @param authorId
      * @return
      */
@@ -123,18 +127,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     /**
      * 查询最新文章
+     *
      * @return
      */
     @Override
     public List<ArticleNewVO> getNewArticle() {
         IPage<Article> page = new Page<>(1, 5);
         page = this.lambdaQuery().orderByDesc(Article::getUpdateTime).page(page);
-        List<ArticleNewVO> articleNewVOS = BeanUtil.copyToList(page.getRecords(), ArticleNewVO.class);
-        return articleNewVOS;
+        return BeanUtil.copyToList(page.getRecords(), ArticleNewVO.class);
     }
 
     /**
      * 修改文章
+     *
      * @param articleDTO
      */
     @Transactional
@@ -145,37 +150,44 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         imageAssetService.lambdaUpdate()
                 .in(CollectionUtil.isNotEmpty(strings), ImageAsset::getObjectKey, strings)
                 .eq(StrUtil.isNotBlank(articleDTO.getTempId()), ImageAsset::getTempId, articleDTO.getTempId())
-                .set(ImageAsset::getStatus,1)
-                .set(ImageAsset::getTempId,null)
+                .set(ImageAsset::getStatus, 1)
+                .set(ImageAsset::getTempId, null)
                 .update();
+        log.info("图片使用状态修改完毕,tempId={}", articleDTO.getTempId());
 
         Article article = BeanUtil.copyProperties(articleDTO, Article.class);
 
         articleService.updateById(article);
+        log.info("文章修改完毕,articleId={}", article.getId());
     }
 
     /**
      * 添加文章
+     *
      * @param articleDTO
      */
     @Transactional
     @Override
     public void add(ArticleDTO articleDTO) {
         // 判断文章创作者和登录用户是否为同一人
-        if(!articleDTO.getUserId().equals(UserContext.getUserId())) {
+        if (!articleDTO.getUserId().equals(UserContext.getUserId())) {
+            log.warn("用户和文章作者不匹配,articleDTO={},userId={}", articleDTO, UserContext.getUserId());
             throw new ArticleException(ArticleExceptionMessage.USER_NOT_SAME);
         }
         Article article = BeanUtil.copyProperties(articleDTO, Article.class);
         articleService.save(article);
+        log.info("文章添加完毕,articleId={}", article.getId());
 
         // 标记使用图片
         Set<String> strings = MdObjectKeyPickerUtils.extractKeys(articleDTO.getContent());
         imageAssetService.lambdaUpdate()
                 .in(CollectionUtil.isNotEmpty(strings), ImageAsset::getObjectKey, strings)
                 .eq(StrUtil.isNotBlank(articleDTO.getTempId()), ImageAsset::getTempId, articleDTO.getTempId())
-                .set(ImageAsset::getStatus,1)
-                .set(ImageAsset::getArticleId,article.getId())
-                .set(ImageAsset::getTempId,null)
+                .set(ImageAsset::getStatus, 1)
+                .set(ImageAsset::getArticleId, article.getId())
+                .set(ImageAsset::getTempId, null)
                 .update();
+
+        log.info("图片使用状态修改完毕,articleDTO={}", articleDTO);
     }
 }

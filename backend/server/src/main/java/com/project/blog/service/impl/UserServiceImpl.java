@@ -16,8 +16,10 @@ import com.project.blog.pojo.vo.LoginVO;
 import com.project.blog.pojo.vo.UserInfo;
 import com.project.blog.service.IUserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
@@ -26,6 +28,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     /**
      * 用户登录
+     *
      * @param loginDto
      * @return
      */
@@ -35,17 +38,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User user = this.lambdaQuery()
                 .eq(StrUtil.isNotBlank(loginDto.getUsername()), User::getUsername, loginDto.getUsername())
                 .one();
-        if(user==null) {
+        if (user == null) {
+            log.warn("用户不存在,username={}", loginDto.getUsername());
             throw new UserException(UserExceptionMessage.USER_NOT_EXIST);
         }
 
         // 密码匹配
-        if (!SecurityUtils.matches(loginDto.getPassword(), user.getSalt(), user.getPassword())){
+        if (!SecurityUtils.matches(loginDto.getPassword(), user.getSalt(), user.getPassword())) {
+            log.warn("登录账号时密码错误,username={}", loginDto.getUsername());
             throw new UserException(UserExceptionMessage.PASSWORD_ERROR);
         }
         String token = jwtUtils.generateToken(user.getId());
 
         UserInfo userInfo = BeanUtil.copyProperties(user, UserInfo.class);
+        log.info("用户登陆成功,username={}", loginDto.getUsername());
 
         return LoginVO.builder()
                 .token(token)
@@ -55,17 +61,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     /**
      * 用户注册
+     *
      * @param registerDTO
      */
     @Override
     public void register(RegisterDTO registerDTO) {
+        // 用户查重
         User user = this.lambdaQuery()
                 .eq(StrUtil.isNotBlank(registerDTO.getUsername()), User::getUsername, registerDTO.getUsername())
                 .one();
-        if(user!=null){
+        if (user != null) {
+            log.warn("用户已存在,username={}", registerDTO.getUsername());
             throw new UserException(UserExceptionMessage.USER_REGISTERED);
         }
 
+        // 保存用户
         User registerUser = BeanUtil.copyProperties(registerDTO, User.class);
         registerUser.setStatus(UserStatus.ACTIVE);
 
@@ -76,5 +86,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!saved) {
             throw new UserException(UserExceptionMessage.USER_REGISTER_ERROR);
         }
+
+        log.info("用户注册成功,username={}", registerDTO.getUsername());
     }
 }

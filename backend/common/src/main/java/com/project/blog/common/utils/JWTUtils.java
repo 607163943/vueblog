@@ -68,12 +68,4 @@ public class JWTUtils {
             throw new RuntimeException("token已过期");
         }
     }
-
-    /**
-     * token是否过期
-     * @return  true：过期
-     */
-    public boolean isTokenExpired(Date expiration) {
-        return expiration.before(new Date());
-    }
 }

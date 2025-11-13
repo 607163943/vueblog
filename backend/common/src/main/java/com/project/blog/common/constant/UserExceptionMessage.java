@@ -8,4 +8,6 @@ public interface UserExceptionMessage {
     String USER_REGISTER_ERROR="用户注册失败！";
 
     String PASSWORD_ERROR="密码错误！";
+
+    String USER_NOT_LOGIN="用户未登录！";
 }

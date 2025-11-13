@@ -4,5 +4,6 @@
 /backend/common/target
 /backend/pojo/target
 /backend/server/target
+/backend/logs
 
 /frontend/node_modules
