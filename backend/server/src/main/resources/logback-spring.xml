@@ -23,7 +23,6 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 
             <!-- 归档文件名：logs/2025/11/14/app.2025-11-14.0.log -->
-            <!--TODO:日志文件产出异常-->
             <fileNamePattern>
                 ${LOG_HOME}/%d{yyyy/MM/dd}/app.%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
