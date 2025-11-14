@@ -4,6 +4,8 @@ package com.project.blog.common.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.project.blog.common.constant.UserExceptionMessage;
+import com.project.blog.common.exception.UserException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -65,8 +67,8 @@ public class JWTUtils {
             JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(secret)).build();
             jwtVerifier.verify(token);
         }catch (Exception e){
-            log.debug("validate is token error ", e);
-            throw new RuntimeException("token已过期");
+            log.info("JWT令牌过期", e);
+            throw new UserException(UserExceptionMessage.LOGIN_TIMEOUT);
         }
     }
 }

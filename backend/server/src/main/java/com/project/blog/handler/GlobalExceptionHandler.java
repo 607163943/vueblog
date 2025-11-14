@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public Result<Object> handler(MethodArgumentNotValidException e) {
-        log.error("参数校验异常:-------------->", e);
+        log.warn("参数校验异常:-------------->", e);
         BindingResult bindingResult = e.getBindingResult();
         ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
         return Result.error(ResultCodeStatus.PARAM_ERROR, objectError.getDefaultMessage());

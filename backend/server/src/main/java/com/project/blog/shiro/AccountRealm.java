@@ -1,5 +1,6 @@
 package com.project.blog.shiro;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.project.blog.common.constant.UserExceptionMessage;
 import com.project.blog.common.constant.UserStatus;
 import com.project.blog.common.exception.UserException;
@@ -27,7 +28,7 @@ public class AccountRealm extends AuthorizingRealm {
 
     @Override
     public boolean supports(AuthenticationToken token) {
-        return token instanceof JwtToken;
+        return token instanceof JWTToken;
     }
 
     @Override
@@ -39,10 +40,10 @@ public class AccountRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         // 获取令牌
-        JwtToken jwt = (JwtToken) token;
+        JWTToken jwtToken = (JWTToken) token;
 
         // 解析出用户
-        String userId = jwtUtils.getUserId(jwt.getPrincipal().toString());
+        String userId = jwtUtils.getUserId(jwtToken.getPrincipal().toString());
         User user = userService.getById(Long.parseLong(userId));
         if (user == null) {
             log.warn("用户不存在,userId={}", userId);
@@ -54,6 +55,8 @@ public class AccountRealm extends AuthorizingRealm {
             throw new UserException(UserExceptionMessage.USER_LOCKED);
         }
 
-        return new SimpleAuthenticationInfo(Long.parseLong(userId), jwt.getCredentials(), getName());
+        UserAccount userAccount = BeanUtil.copyProperties(user, UserAccount.class);
+
+        return new SimpleAuthenticationInfo(userAccount, jwtToken.getCredentials(), getName());
     }
 }

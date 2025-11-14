@@ -10,4 +10,6 @@ public interface UserExceptionMessage {
     String USER_REGISTER_ERROR="用户注册失败！";
 
     String PASSWORD_ERROR="密码错误！";
+
+    String LOGIN_TIMEOUT="登录超时！";
 }

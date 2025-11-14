@@ -20,6 +20,7 @@ import com.project.blog.pojo.po.ImageAsset;
 import com.project.blog.pojo.vo.*;
 import com.project.blog.service.IArticleService;
 import com.project.blog.service.IImageAssetService;
+import com.project.blog.shiro.UserAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.context.annotation.Lazy;
@@ -69,7 +70,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public PageResult<List<ArticleTablePageVO>> userArticlePageQuery(UserArticlePageDTO userArticlePageDTO) {
         IPage<Article> page = new Page<>(userArticlePageDTO.getPage(), userArticlePageDTO.getPageSize());
 
-        Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+        UserAccount userAccount =(UserAccount) SecurityUtils.getSubject().getPrincipal();
+        Long userId = userAccount.getId();
 
         // 分页查询用户文章
         page = this.lambdaQuery()
@@ -170,8 +172,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public void add(ArticleDTO articleDTO) {
         // 判断文章创作者和登录用户是否为同一人
-        if (!articleDTO.getUserId().equals(SecurityUtils.getSubject().getPrincipal())) {
-            log.warn("用户和文章作者不匹配,articleDTO={},userId={}", articleDTO, SecurityUtils.getSubject().getPrincipal());
+        UserAccount userAccount = (UserAccount) SecurityUtils.getSubject().getPrincipal();
+        if (!articleDTO.getUserId().equals(userAccount.getId())) {
+            log.warn("用户和文章作者不匹配,articleDTO={},userId={}", articleDTO, userAccount.getId());
             throw new ArticleException(ArticleExceptionMessage.USER_NOT_SAME);
         }
         Article article = BeanUtil.copyProperties(articleDTO, Article.class);
