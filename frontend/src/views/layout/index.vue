@@ -13,14 +13,13 @@ import LayoutHeader from '@/views/layout/Header'
 import LayoutFooter from '@/views/layout/Footer'
 import { userGetInfoService } from '@/api/user'
 import { mapState } from 'vuex'
-import jwtUtils from '@/utils/jwt-utils'
 export default {
   components: { LayoutHeader, LayoutFooter },
   computed: {
-    ...mapState('user', ['accessToken'])
+    ...mapState('user', ['token'])
   },
   async created () {
-    if (this.accessToken || jwtUtils.getRefreshToken()) {
+    if (this.token) {
       try {
         const res = await userGetInfoService()
         if (res.data.code === 200) {

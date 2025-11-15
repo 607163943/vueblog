@@ -6,7 +6,6 @@ import com.project.blog.common.constant.UserExceptionMessage;
 import com.project.blog.common.exception.UserLoginException;
 import com.project.blog.common.properties.AccessTokenProperties;
 import com.project.blog.common.properties.Ignore;
-import com.project.blog.common.properties.RefreshTokenProperties;
 import com.project.blog.common.properties.WhiteIgnoreProperties;
 import com.project.blog.common.utils.JWTUtils;
 import com.project.blog.security.ShiroToken;
@@ -37,8 +36,6 @@ public class JWTFilter extends AuthenticatingFilter {
     private final AntPathMatcher aantPathMatcher;
 
     private final AccessTokenProperties accessTokenProperties;
-
-    private final RefreshTokenProperties refreshTokenProperties;
 
     /**
      * 创建认证信息
@@ -112,14 +109,8 @@ public class JWTFilter extends AuthenticatingFilter {
         // 获取请求头中的令牌
         HttpServletRequest request = WebUtils.toHttp(servletRequest);
         String token = request.getHeader(HttpHeaderKey.AUTHORIZATION);
-        // 判断请求是否为刷新令牌
-        if (request.getRequestURI().equals("/user/refresh")) {
-            // 判断是否已过期
-            jwtUtils.check(token, refreshTokenProperties);
-        } else {
-            // 判断是否已过期
-            jwtUtils.check(token, accessTokenProperties);
-        }
+
+        jwtUtils.check(token);
 
         // 执行自动登录
         return executeLogin(servletRequest, servletResponse);

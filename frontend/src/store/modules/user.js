@@ -1,19 +1,14 @@
 export default {
   namespaced: true,
   state: {
-    // 是否登录
-    isLogin: false,
-    // JWT访问令牌
-    accessToken: '',
+    // JWT令牌
+    token: '',
     // 用户信息
     userInfo: {}
   },
   mutations: {
-    setAccessToken (state, accessToken) {
-      state.accessToken = accessToken
-    },
-    setIsLogin (state, isLogin) {
-      state.isLogin = isLogin
+    setToken (state, token) {
+      state.token = token
     },
     setUserInfo (state, userInfo) {
       state.userInfo = userInfo

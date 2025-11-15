@@ -17,11 +17,13 @@ minio:
 security:
   # JWT配置
   jwt:
+    # 访问令牌
     access-token:
       # 加密秘钥
       secret: vue-blog-access
       # 访问token有效时长，1天，单位秒
       expire: 86400
+    # 刷新令牌
     refresh-token:
       # 加密秘钥
       secret: vue-blog-refresh

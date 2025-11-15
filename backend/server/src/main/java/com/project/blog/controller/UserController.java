@@ -86,17 +86,4 @@ public class UserController {
         return Result.success(null, "退出成功");
     }
 
-    /**
-     * 刷新令牌
-     *
-     * @return 新的访问令牌
-     */
-    @RequiresAuthentication
-    @ApiOperation("刷新令牌")
-    @GetMapping("/refresh")
-    public Result<String> refreshToken() {
-        UserAccount userAccount = (UserAccount) SecurityUtils.getSubject().getPrincipal();
-        return Result.success(jwtUtils.generateAccessToken(userAccount.getId()));
-    }
-
 }

@@ -67,7 +67,6 @@
 import Footer from '@/views/layout/Footer'
 import { userLoginService } from '@/api/user'
 import { encryptPassword } from '@/utils/security-utils'
-import storageUtils from '@/utils/storage-utils'
 export default {
   name: 'UserLogin',
   components: { Footer },
@@ -82,6 +81,8 @@ export default {
         // 密码
         orgPassword: ''
       },
+      // 记住我
+      rememberMe: false,
       // 加载动画标志
       loading: false,
       // 表单校验规则
@@ -104,9 +105,7 @@ export default {
             trigger: 'blur'
           }
         ]
-      },
-      // 记住我,需要后端配合实现
-      rememberMe: false
+      }
     }
   },
   methods: {
@@ -118,12 +117,10 @@ export default {
         this.loginForm.password = encryptPassword(this.loginForm.orgPassword)
         const res = await userLoginService(this.loginForm)
 
-        storageUtils.setSessionStorage('refreshToken', res.data.data.refreshToken)
-
-        const accessToken = res.data.data.accessToken
+        const token = res.data.data.token
 
         // 提交到Vuex仓库
-        this.$store.commit('user/setAccessToken', accessToken)
+        this.$store.commit('user/setToken', token)
 
         // 跳转到登录前的页面
         if (this.$route.query.redirect) {

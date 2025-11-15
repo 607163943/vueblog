@@ -14,8 +14,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginVO {
     @ApiModelProperty("访问令牌")
-    private String accessToken;
-
-    @ApiModelProperty("刷新令牌")
-    private String refreshToken;
+    private String token;
 }
