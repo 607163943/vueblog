@@ -11,8 +11,25 @@
 <script>
 import LayoutHeader from '@/views/layout/Header'
 import LayoutFooter from '@/views/layout/Footer'
+import { userGetInfoService } from '@/api/user'
+import { mapState } from 'vuex'
+import jwtUtils from '@/utils/jwt-utils'
 export default {
-  components: { LayoutHeader, LayoutFooter }
+  components: { LayoutHeader, LayoutFooter },
+  computed: {
+    ...mapState('user', ['accessToken'])
+  },
+  async created () {
+    if (this.accessToken || jwtUtils.getRefreshToken()) {
+      try {
+        const res = await userGetInfoService()
+        if (res.data.code === 200) {
+          const userInfo = res.data.data
+          this.$store.commit('user/setUserInfo', userInfo)
+        }
+      } catch (error) { }
+    }
+  }
 }
 </script>
 

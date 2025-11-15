@@ -53,21 +53,20 @@
 
 <script>
 import { userLogoutService } from '@/api/user'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'LayoutHeader',
   data () {
     return {
-      isLogin: false,
       url: require('@/asserts/img/logo.png')
     }
   },
   computed: {
-    ...mapState('user', ['userInfo', 'token'])
+    ...mapState('user', ['userInfo', 'accessToken', 'isLogin'])
   },
   created () {
-    if (this.token) {
-      this.isLogin = true
+    if (this.accessToken) {
+      this.setIsLogin(true)
     }
   },
   methods: {
@@ -86,10 +85,11 @@ export default {
     // 登出
     async logout () {
       await userLogoutService()
-      this.$store.commit('user/setToken', '')
+      this.$store.commit('user/setAccessToken', '')
       this.$store.commit('user/setUserInfo', {})
       this.$router.push('/login')
-    }
+    },
+    ...mapMutations('user', ['setIsLogin'])
   }
 }
 </script>

@@ -166,7 +166,6 @@ public class ArticleController {
      * @return 作者创作数据
      */
     @ApiOperation("统计作者创作信息")
-    @RequiresAuthentication
     @GetMapping("/author/info/{authorId}")
     public Result<AuthorArticlePublishCountVO> countAuthorArticlePublishCount(@PathVariable("authorId") Long authorId) {
         AuthorArticlePublishCountVO authorArticlePublishCountVO = articleService.countAuthorArticlePublishCount(authorId);

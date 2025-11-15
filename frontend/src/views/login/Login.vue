@@ -121,11 +121,9 @@ export default {
         storageUtils.setSessionStorage('refreshToken', res.data.data.refreshToken)
 
         const accessToken = res.data.data.accessToken
-        const userInfo = res.data.data.userInfo
 
         // 提交到Vuex仓库
         this.$store.commit('user/setAccessToken', accessToken)
-        this.$store.commit('user/setUserInfo', userInfo)
 
         // 跳转到登录前的页面
         if (this.$route.query.redirect) {

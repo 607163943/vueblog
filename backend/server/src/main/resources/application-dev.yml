@@ -34,10 +34,16 @@ security:
       - uri: /article
         methods:
           - GET
+      - uri: /article/new
+        methods:
+          - GET
       - uri: /article/id/**
         methods:
           - GET
       - uri: /article/detail/**
+        methods:
+          - GET
+      - uri: /article/author/info/**
         methods:
           - GET
       - uri: /user/login

@@ -4,6 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import com.project.blog.common.constant.UserExceptionMessage;
 import com.project.blog.common.constant.UserStatus;
 import com.project.blog.common.exception.UserException;
+import com.project.blog.common.properties.AccessTokenProperties;
+import com.project.blog.common.properties.RefreshTokenProperties;
 import com.project.blog.common.utils.JWTUtils;
 import com.project.blog.pojo.po.User;
 import com.project.blog.service.IUserService;
@@ -26,6 +28,10 @@ public class AccountRealm extends AuthorizingRealm {
 
     private final IUserService userService;
 
+    private final AccessTokenProperties accessTokenProperties;
+
+    private final RefreshTokenProperties refreshTokenProperties;
+
     @Override
     public boolean supports(AuthenticationToken token) {
         return token instanceof ShiroToken;
@@ -43,7 +49,13 @@ public class AccountRealm extends AuthorizingRealm {
         ShiroToken shiroToken = (ShiroToken) token;
 
         // 解析出用户
-        String userId = jwtUtils.getUserId(shiroToken.getPrincipal().toString());
+        String userId=null;
+        try{
+            userId = jwtUtils.getUserId(shiroToken.getPrincipal().toString(), accessTokenProperties);
+        }catch (Exception e) {
+            // 尝试以刷新令牌格式解析
+            userId= jwtUtils.getUserId(shiroToken.getPrincipal().toString(), refreshTokenProperties);
+        }
         User user = userService.getById(Long.parseLong(userId));
         if (user == null) {
             log.warn("用户不存在,userId={}", userId);

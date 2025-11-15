@@ -18,7 +18,4 @@ public class LoginVO {
 
     @ApiModelProperty("刷新令牌")
     private String refreshToken;
-
-    @ApiModelProperty("用户信息")
-    private UserInfo userInfo;
 }

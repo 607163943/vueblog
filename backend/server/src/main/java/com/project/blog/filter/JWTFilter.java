@@ -3,11 +3,14 @@ package com.project.blog.filter;
 import cn.hutool.core.util.StrUtil;
 import com.project.blog.common.constant.HttpHeaderKey;
 import com.project.blog.common.constant.UserExceptionMessage;
-import com.project.blog.common.exception.UserException;
+import com.project.blog.common.exception.UserLoginException;
+import com.project.blog.common.properties.AccessTokenProperties;
 import com.project.blog.common.properties.Ignore;
+import com.project.blog.common.properties.RefreshTokenProperties;
 import com.project.blog.common.properties.WhiteIgnoreProperties;
 import com.project.blog.common.utils.JWTUtils;
 import com.project.blog.security.ShiroToken;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -16,7 +19,6 @@ import org.apache.shiro.web.util.WebUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -24,18 +26,19 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JWTFilter extends AuthenticatingFilter {
+    public static final String KEY = "jwt";
 
-    public static final String KEY="jwt";
+    private final JWTUtils jwtUtils;
 
-    @Resource
-    private JWTUtils jwtUtils;
+    private final WhiteIgnoreProperties whiteIgnoreProperties;
 
-    @Resource
-    private WhiteIgnoreProperties whiteIgnoreProperties;
+    private final AntPathMatcher aantPathMatcher;
 
-    @Resource
-    private AntPathMatcher aantPathMatcher;
+    private final AccessTokenProperties accessTokenProperties;
+
+    private final RefreshTokenProperties refreshTokenProperties;
 
     /**
      * 创建认证信息
@@ -53,7 +56,7 @@ public class JWTFilter extends AuthenticatingFilter {
         // 为null的token直接抛出异常
         if (StrUtil.isEmpty(token)) {
             log.warn("空令牌认证!,servletRequest={}", servletRequest);
-            throw new UserException(UserExceptionMessage.LOGIN_TIMEOUT);
+            throw new UserLoginException(UserExceptionMessage.LOGIN_TIMEOUT);
         }
 
         return ShiroToken.builder()
@@ -75,6 +78,12 @@ public class JWTFilter extends AuthenticatingFilter {
         return isWhiteList(request);
     }
 
+    /**
+     * 判断是否在白名单内
+     *
+     * @param request 请求对象
+     * @return 是否在白名单内
+     */
     private boolean isWhiteList(ServletRequest request) {
         HttpServletRequest http = WebUtils.toHttp(request);
         String requestURI = http.getRequestURI();
@@ -82,7 +91,7 @@ public class JWTFilter extends AuthenticatingFilter {
 
         List<Ignore> ignores = whiteIgnoreProperties.getIgnores();
         for (Ignore ignore : ignores) {
-            if(aantPathMatcher.match(ignore.getUri(), requestURI)&&ignore.getMethods().contains(method)) {
+            if (aantPathMatcher.match(ignore.getUri(), requestURI) && ignore.getMethods().contains(method)) {
                 return true;
             }
         }
@@ -103,9 +112,14 @@ public class JWTFilter extends AuthenticatingFilter {
         // 获取请求头中的令牌
         HttpServletRequest request = WebUtils.toHttp(servletRequest);
         String token = request.getHeader(HttpHeaderKey.AUTHORIZATION);
-        System.out.println(request.getRequestURI());
-        // 判断是否已过期
-        jwtUtils.check(token);
+        // 判断请求是否为刷新令牌
+        if (request.getRequestURI().equals("/user/refresh")) {
+            // 判断是否已过期
+            jwtUtils.check(token, refreshTokenProperties);
+        } else {
+            // 判断是否已过期
+            jwtUtils.check(token, accessTokenProperties);
+        }
 
         // 执行自动登录
         return executeLogin(servletRequest, servletResponse);

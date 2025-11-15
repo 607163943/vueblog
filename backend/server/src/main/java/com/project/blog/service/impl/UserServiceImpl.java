@@ -13,7 +13,6 @@ import com.project.blog.pojo.dto.LoginDTO;
 import com.project.blog.pojo.dto.RegisterDTO;
 import com.project.blog.pojo.po.User;
 import com.project.blog.pojo.vo.LoginVO;
-import com.project.blog.pojo.vo.UserInfo;
 import com.project.blog.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,13 +58,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .set(User::getLastLoginTime, LocalDateTime.now())
                 .update();
 
-        UserInfo userInfo = BeanUtil.copyProperties(user, UserInfo.class);
         log.info("用户登陆成功,username={}", loginDTO.getUsername());
 
         return LoginVO.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .userInfo(userInfo)
                 .build();
     }
 

@@ -4,6 +4,7 @@ package com.project.blog.handler;
 import com.project.blog.common.constant.ResultCodeStatus;
 import com.project.blog.common.exception.ArticleException;
 import com.project.blog.common.exception.UserException;
+import com.project.blog.common.exception.UserLoginException;
 import com.project.blog.common.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.ShiroException;
@@ -29,6 +30,18 @@ public class GlobalExceptionHandler {
     public Result<Object> articleHandler(ArticleException e) {
         log.warn("文章模块业务异常:-------------->{}", e.getMessage(), e);
         return Result.error(ResultCodeStatus.PARAM_ERROR, e.getMessage());
+    }
+
+    /**
+     * 处理用户登录异常
+     * @param e 用户登录异常对象
+     * @return 错误响应
+     */
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UserLoginException.class)
+    public Result<Object> userLoginHandler(UserLoginException e) {
+        log.warn("用户登录异常:-------------->{}", e.getMessage(), e);
+        return Result.error(ResultCodeStatus.USER_NOT_LOGIN, e.getMessage());
     }
 
     /**

@@ -73,8 +73,10 @@ export default {
   methods: {
     // 获取tempId
     async getTempId () {
-      const res = await getTempIdService()
-      this.tempId = res.data.data
+      try {
+        const res = await getTempIdService()
+        this.tempId = res.data.data
+      } catch (error) {}
     },
     // 上传图片并回显
     async onImgAdd (pos, file) {

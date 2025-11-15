@@ -1,10 +1,10 @@
 export default {
   namespaced: true,
   state: {
+    // 是否登录
+    isLogin: false,
     // JWT访问令牌
     accessToken: '',
-    // JWT刷新令牌
-    refreshToken: '',
     // 用户信息
     userInfo: {}
   },
@@ -12,8 +12,8 @@ export default {
     setAccessToken (state, accessToken) {
       state.accessToken = accessToken
     },
-    setRefreshToken (state, refreshToken) {
-      state.refreshToken = refreshToken
+    setIsLogin (state, isLogin) {
+      state.isLogin = isLogin
     },
     setUserInfo (state, userInfo) {
       state.userInfo = userInfo
