@@ -21,14 +21,10 @@ security:
     access-token:
       # 加密秘钥
       secret: vue-blog-access
-      # 访问token有效时长，1天，单位秒
+      # 普通token有效时长，1天，单位秒
       expire: 86400
-    # 刷新令牌
-    refresh-token:
-      # 加密秘钥
-      secret: vue-blog-refresh
-      # 刷新token有效时长，30天，单位秒
-      expire: 2592000
+      # 长期token有效时长，1个月，单位秒
+      long-expire: 2592000
 
   # 白名单配置
   white-ignore:

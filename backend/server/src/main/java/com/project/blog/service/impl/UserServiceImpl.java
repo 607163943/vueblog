@@ -12,7 +12,6 @@ import com.project.blog.mapper.UserMapper;
 import com.project.blog.pojo.dto.LoginDTO;
 import com.project.blog.pojo.dto.RegisterDTO;
 import com.project.blog.pojo.po.User;
-import com.project.blog.pojo.vo.LoginVO;
 import com.project.blog.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * @return
      */
     @Override
-    public LoginVO login(LoginDTO loginDTO) {
+    public String login(LoginDTO loginDTO) {
         // 用户名匹配
         User user = this.lambdaQuery()
                 .eq(StrUtil.isNotBlank(loginDTO.getUsername()), User::getUsername, loginDTO.getUsername())
@@ -49,7 +48,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             log.warn("登录账号时密码错误,username={}", loginDTO.getUsername());
             throw new UserException(UserExceptionMessage.PASSWORD_ERROR);
         }
-        String token = jwtUtils.generateToken(user.getId());
+        String token = jwtUtils.generateToken(user.getId(), loginDTO.getRememberMe());
 
         // 更新登录时间
         this.lambdaUpdate()
@@ -59,9 +58,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         log.info("用户登陆成功,username={}", loginDTO.getUsername());
 
-        return LoginVO.builder()
-                .token(token)
-                .build();
+        return token;
     }
 
     /**

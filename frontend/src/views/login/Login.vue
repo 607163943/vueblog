@@ -29,7 +29,7 @@
             <el-row style="margin-bottom: 20px;">
               <div class="login-other">
                 <el-col :span="12">
-                  <el-checkbox v-model="rememberMe">记住我</el-checkbox>
+                  <el-checkbox v-model="loginForm.rememberMe">记住我</el-checkbox>
                 </el-col>
                 <el-col :span="12">
                   <div class="login-other-forget">
@@ -79,10 +79,10 @@ export default {
         // 用户名
         username: '',
         // 密码
-        orgPassword: ''
+        orgPassword: '',
+        // 记住我
+        rememberMe: false
       },
-      // 记住我
-      rememberMe: false,
       // 加载动画标志
       loading: false,
       // 表单校验规则
@@ -117,7 +117,7 @@ export default {
         this.loginForm.password = encryptPassword(this.loginForm.orgPassword)
         const res = await userLoginService(this.loginForm)
 
-        const token = res.data.data.token
+        const token = res.data.data
 
         // 提交到Vuex仓库
         this.$store.commit('user/setToken', token)

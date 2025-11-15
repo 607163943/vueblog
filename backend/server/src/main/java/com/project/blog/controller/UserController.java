@@ -3,11 +3,9 @@ package com.project.blog.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.project.blog.common.result.Result;
-import com.project.blog.common.utils.JWTUtils;
 import com.project.blog.pojo.dto.LoginDTO;
 import com.project.blog.pojo.dto.RegisterDTO;
 import com.project.blog.pojo.po.User;
-import com.project.blog.pojo.vo.LoginVO;
 import com.project.blog.pojo.vo.UserInfoVO;
 import com.project.blog.security.UserAccount;
 import com.project.blog.service.IUserService;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final IUserService userService;
-    private final JWTUtils jwtUtils;
 
     /**
      * 用户注册
@@ -51,10 +48,9 @@ public class UserController {
      */
     @ApiOperation("用户登录")
     @PostMapping("/login")
-    public Result<LoginVO> login(@Validated @RequestBody LoginDTO loginDTO) {
-        LoginVO loginVO = userService.login(loginDTO);
+    public Result<String> login(@Validated @RequestBody LoginDTO loginDTO) {
 
-        return Result.success(loginVO);
+        return Result.success(userService.login(loginDTO));
     }
 
     /**

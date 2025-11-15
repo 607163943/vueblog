@@ -13,6 +13,9 @@ public class AccessTokenProperties {
     // 密钥
     private String secret;
 
-    // 过期时间(s)
+    // 有效时间(s)
     private Long expire;
+
+    // 长期有效时间(s)
+    private Long longExpire;
 }

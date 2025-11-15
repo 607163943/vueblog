@@ -31,10 +31,15 @@ public class JWTUtils {
     /**
      * 生成访问token
      */
-    public String generateToken(long userId) {
+    public String generateToken(long userId,boolean rememberMe) {
         Date nowDate = new Date();
         //过期时间
-        Date expireDate = new Date(nowDate.getTime() + accessTokenProperties.getExpire() * 1000);
+        Date expireDate=null;
+        if(rememberMe) {
+            expireDate = new Date(nowDate.getTime() + accessTokenProperties.getLongExpire() * 1000);
+        }else {
+            expireDate = new Date(nowDate.getTime() + accessTokenProperties.getExpire() * 1000);
+        }
         Map<String, Object> map = new HashMap<>();
         map.put(TOKEN_HEADER_KEY, AccessTokenProperties.TYPE);
 
