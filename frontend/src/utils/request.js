@@ -11,9 +11,9 @@ const instance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
-  const token = store.state.user.token
-  if (token) {
-    config.headers.Authorization = token
+  const accessToken = store.state.user.accessToken
+  if (accessToken) {
+    config.headers.Authorization = accessToken
   }
   return config
 }, function (error) {

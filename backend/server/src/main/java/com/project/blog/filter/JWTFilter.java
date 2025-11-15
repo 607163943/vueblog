@@ -1,23 +1,26 @@
 package com.project.blog.filter;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.project.blog.common.constant.HttpHeaderKey;
 import com.project.blog.common.constant.UserExceptionMessage;
 import com.project.blog.common.exception.UserException;
+import com.project.blog.common.properties.Ignore;
+import com.project.blog.common.properties.WhiteIgnoreProperties;
 import com.project.blog.common.utils.JWTUtils;
-import com.project.blog.shiro.JWTToken;
+import com.project.blog.security.ShiroToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -26,7 +29,13 @@ public class JWTFilter extends AuthenticatingFilter {
     public static final String KEY="jwt";
 
     @Resource
-    JWTUtils jwtUtils;
+    private JWTUtils jwtUtils;
+
+    @Resource
+    private WhiteIgnoreProperties whiteIgnoreProperties;
+
+    @Resource
+    private AntPathMatcher aantPathMatcher;
 
     /**
      * 创建认证信息
@@ -47,13 +56,13 @@ public class JWTFilter extends AuthenticatingFilter {
             throw new UserException(UserExceptionMessage.LOGIN_TIMEOUT);
         }
 
-        return JWTToken.builder()
+        return ShiroToken.builder()
                 .token(token)
                 .build();
     }
 
     /**
-     * 判断是否允许访问
+     * 判断是否允许放行
      *
      * @param request     请求对象
      * @param response    响应对象
@@ -62,10 +71,23 @@ public class JWTFilter extends AuthenticatingFilter {
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
-        String token = httpServletRequest.getHeader(HttpHeaderKey.AUTHORIZATION);
-        // 匿名访客直接放行
-        return StringUtils.isEmpty(token);
+        // 放行白名单检验
+        return isWhiteList(request);
+    }
+
+    private boolean isWhiteList(ServletRequest request) {
+        HttpServletRequest http = WebUtils.toHttp(request);
+        String requestURI = http.getRequestURI();
+        String method = http.getMethod();
+
+        List<Ignore> ignores = whiteIgnoreProperties.getIgnores();
+        for (Ignore ignore : ignores) {
+            if(aantPathMatcher.match(ignore.getUri(), requestURI)&&ignore.getMethods().contains(method)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -81,6 +103,7 @@ public class JWTFilter extends AuthenticatingFilter {
         // 获取请求头中的令牌
         HttpServletRequest request = WebUtils.toHttp(servletRequest);
         String token = request.getHeader(HttpHeaderKey.AUTHORIZATION);
+        System.out.println(request.getRequestURI());
         // 判断是否已过期
         jwtUtils.check(token);
 

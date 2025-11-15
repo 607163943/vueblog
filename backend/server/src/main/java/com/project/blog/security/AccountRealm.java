@@ -1,4 +1,4 @@
-package com.project.blog.shiro;
+package com.project.blog.security;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.project.blog.common.constant.UserExceptionMessage;
@@ -28,7 +28,7 @@ public class AccountRealm extends AuthorizingRealm {
 
     @Override
     public boolean supports(AuthenticationToken token) {
-        return token instanceof JWTToken;
+        return token instanceof ShiroToken;
     }
 
     @Override
@@ -40,10 +40,10 @@ public class AccountRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         // 获取令牌
-        JWTToken jwtToken = (JWTToken) token;
+        ShiroToken shiroToken = (ShiroToken) token;
 
         // 解析出用户
-        String userId = jwtUtils.getUserId(jwtToken.getPrincipal().toString());
+        String userId = jwtUtils.getUserId(shiroToken.getPrincipal().toString());
         User user = userService.getById(Long.parseLong(userId));
         if (user == null) {
             log.warn("用户不存在,userId={}", userId);
@@ -57,6 +57,6 @@ public class AccountRealm extends AuthorizingRealm {
 
         UserAccount userAccount = BeanUtil.copyProperties(user, UserAccount.class);
 
-        return new SimpleAuthenticationInfo(userAccount, jwtToken.getCredentials(), getName());
+        return new SimpleAuthenticationInfo(userAccount, shiroToken.getCredentials(), getName());
     }
 }

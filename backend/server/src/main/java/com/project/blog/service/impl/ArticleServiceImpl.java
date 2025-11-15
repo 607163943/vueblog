@@ -20,7 +20,7 @@ import com.project.blog.pojo.po.ImageAsset;
 import com.project.blog.pojo.vo.*;
 import com.project.blog.service.IArticleService;
 import com.project.blog.service.IImageAssetService;
-import com.project.blog.shiro.UserAccount;
+import com.project.blog.security.UserAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.context.annotation.Lazy;

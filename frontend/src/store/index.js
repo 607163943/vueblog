@@ -19,7 +19,7 @@ export default new Vuex.Store({
     reducer (state) {
       return {
         user: {
-          token: state.user.token,
+          accessToken: state.user.accessToken,
           userInfo: state.user.userInfo
         }
       }

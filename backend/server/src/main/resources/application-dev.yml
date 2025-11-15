@@ -5,11 +5,6 @@ mysql:
   username: root
   password: 123456
 
-# redis配置
-redis:
-  host: localhost:16379
-  port: 6371
-
 # minio配置
 minio:
   access-key: minioadmin
@@ -17,3 +12,37 @@ minio:
   end-point: http://127.0.0.1:19000
   bucket-name: vueblog-img
   domain: http://127.0.0.1:19000/vueblog-img/
+
+# 安全配置
+security:
+  # JWT配置
+  jwt:
+    access-token:
+      # 加密秘钥
+      secret: vue-blog-access
+      # 访问token有效时长，1天，单位秒
+      expire: 86400
+    refresh-token:
+      # 加密秘钥
+      secret: vue-blog-refresh
+      # 刷新token有效时长，30天，单位秒
+      expire: 2592000
+
+  # 白名单配置
+  white-ignore:
+    ignores:
+      - uri: /article
+        methods:
+          - GET
+      - uri: /article/id/**
+        methods:
+          - GET
+      - uri: /article/detail/**
+        methods:
+          - GET
+      - uri: /user/login
+        methods:
+          - POST
+      - uri: /user/register
+        methods:
+          - POST

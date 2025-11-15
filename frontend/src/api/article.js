@@ -22,7 +22,7 @@ export const articleUpdateService = (data) => {
 
 // 获取文章
 export const articleGetService = (id) => {
-  return request.get(`/article/${id}`)
+  return request.get(`/article/id/${id}`)
 }
 
 // 获取最新文章(5篇)

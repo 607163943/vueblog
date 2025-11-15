@@ -50,7 +50,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             log.warn("登录账号时密码错误,username={}", loginDTO.getUsername());
             throw new UserException(UserExceptionMessage.PASSWORD_ERROR);
         }
-        String token = jwtUtils.generateToken(user.getId());
+        String accessToken = jwtUtils.generateAccessToken(user.getId());
+        String refreshToken = jwtUtils.generateRefreshToken(user.getId());
 
         // 更新登录时间
         this.lambdaUpdate()
@@ -62,7 +63,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         log.info("用户登陆成功,username={}", loginDTO.getUsername());
 
         return LoginVO.builder()
-                .token(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .userInfo(userInfo)
                 .build();
     }

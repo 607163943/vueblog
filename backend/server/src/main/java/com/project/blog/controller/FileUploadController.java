@@ -39,6 +39,7 @@ public class FileUploadController {
      *
      * @return UUID
      */
+    @ApiOperation("获取UUID作为图片上传组名")
     @RequiresAuthentication
     @GetMapping("/tempId")
     public Result<String> getUUID() {

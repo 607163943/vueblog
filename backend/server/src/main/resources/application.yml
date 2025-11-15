@@ -17,13 +17,6 @@ spring:
     multipart:
       max-file-size: 10MB # 最大上传大小
 
-# shiro-redis配置
-shiro-redis:
-  enabled: true
-  redis-manager:
-    host: ${redis.host}
-    port: ${redis.port}
-
 # mybatis-plus配置
 mybatis-plus:
   global-config:
@@ -54,10 +47,3 @@ logging:
   level:
     root: warn # 框架日志级别
     com.project.blog: info # 业务日志级别
-
-# JWT配置
-jwt:
-  # 加密秘钥
-  secret: vue-blog
-  # token有效时长，7天，单位秒
-  expire: 604800

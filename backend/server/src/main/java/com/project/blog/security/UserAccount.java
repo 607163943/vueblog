@@ -1,4 +1,4 @@
-package com.project.blog.shiro;
+package com.project.blog.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

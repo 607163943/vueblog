@@ -1,4 +1,4 @@
-package com.project.blog.shiro;
+package com.project.blog.security;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 @Builder
 @Data
 @RequiredArgsConstructor
-public class JWTToken implements AuthenticationToken {
+public class ShiroToken implements AuthenticationToken {
     // JWT令牌
     private final String token;
 

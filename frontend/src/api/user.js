@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // 用户登出
 export const userLogoutService = () => {
-  return request.get('/logout')
+  return request.get('/user/logout')
 }
 
 // 用户登录

@@ -13,14 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Api(tags = "用户接口")
 @RestController
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final IUserService userService;
@@ -31,7 +29,7 @@ public class UserController {
      * @return void响应
      */
     @ApiOperation("用户注册")
-    @PostMapping("/user/register")
+    @PostMapping("/register")
     public Result<Object> register(@Validated @RequestBody RegisterDTO registerDTO){
         userService.register(registerDTO);
 
@@ -44,7 +42,7 @@ public class UserController {
      * @return 用户信息
      */
     @ApiOperation("用户登录")
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public Result<LoginVO> login(@Validated @RequestBody LoginDTO loginDTO){
         LoginVO loginVO=userService.login(loginDTO);
 

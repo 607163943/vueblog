@@ -1,8 +1,8 @@
 package com.project.blog.config;
 
 
-import com.project.blog.shiro.AccountRealm;
 import com.project.blog.filter.JWTFilter;
+import com.project.blog.security.AccountRealm;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
@@ -11,7 +11,6 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.crazycake.shiro.RedisCacheManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,15 +28,12 @@ public class ShiroConfig {
     /**
      * 安全管理器
      *
-     * @param accountRealm      账号认证处理Realm
-     * @param redisCacheManager redis缓存
+     * @param accountRealm 账号认证处理Realm
      * @return 安全管理器
      */
     @Bean
-    public DefaultWebSecurityManager securityManager(AccountRealm accountRealm,
-                                                     RedisCacheManager redisCacheManager) {
+    public DefaultWebSecurityManager securityManager(AccountRealm accountRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(accountRealm);
-        securityManager.setCacheManager(redisCacheManager);
 
         // 关闭shiro自带的session
         DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
@@ -78,6 +74,7 @@ public class ShiroConfig {
         shiroFilter.setSecurityManager(securityManager);
         // 添加自定义过滤器
         Map<String, Filter> filters = shiroFilter.getFilters();
+        // 自定义过滤器
         filters.put(JWTFilter.KEY, jwtFilter);
         shiroFilter.setFilters(filters);
 
